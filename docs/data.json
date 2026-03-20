@@ -1,6 +1,6 @@
 {
-  "updated": "2026/03/20 23:42",
-  "total": 6339,
+  "updated": "2026/03/21 00:46",
+  "total": 6474,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -116,6 +116,21 @@
       "name": "ゴールド (田中貴金属)",
       "value": 2206,
       "category": "GLD"
+    },
+    {
+      "name": "BITGET",
+      "value": 25,
+      "category": "ドル"
+    },
+    {
+      "name": "ロボプロ",
+      "value": 10,
+      "category": "ドル"
+    },
+    {
+      "name": "SBI FX",
+      "value": 100,
+      "category": "ドル"
     }
   ],
   "categories": [
@@ -129,7 +144,7 @@
     },
     {
       "name": "ドル",
-      "value": 453
+      "value": 588
     },
     {
       "name": "VT",
