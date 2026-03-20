@@ -1,0 +1,38 @@
+{
+  "updated": "2026/03/20 11:51",
+  "total": 6469,
+  "accounts": [
+    { "name": "住信SBI ネット銀行 代...", "value": 248, "category": "円" },
+    { "name": "楽天銀行 サンバ支店 普...", "value": 90, "category": "円" },
+    { "name": "リクルートカード(MUFG...", "value": 0, "category": "-" },
+    { "name": "Kyash", "value": 0, "category": "-" },
+    { "name": "楽天カード(Visa) XXXX...", "value": 0, "category": "-" },
+    { "name": "住信 SBI ネット銀行 定...", "value": 2000, "category": "円" },
+    { "name": "SBI 証券", "value": 830, "category": "-" },
+    { "name": "楽天証券", "value": 275, "category": "VT" },
+    { "name": "三菱 UFJ e スマート証券", "value": 20, "category": "債券" },
+    { "name": "マネックス証券", "value": 20, "category": "債券" },
+    { "name": "確定拠出年金（JIST）", "value": 342, "category": "債券" },
+    { "name": "楽天", "value": 7, "category": "日本" },
+    { "name": "SBI岡三・USドル・マネー", "value": 452, "category": "ドル" },
+    { "name": "eMAXIS Slim 全世界株式(オ)", "value": 155, "category": "VT" },
+    { "name": "eMAXIS Slim 全世界株式(オ)2", "value": 10, "category": "VT" },
+    { "name": "現金残高等", "value": 204, "category": "円" },
+    { "name": "米ドル現金", "value": 1, "category": "ドル" },
+    { "name": "その他合計", "value": 0, "category": "ドル" },
+    { "name": "225投信", "value": 0, "category": "日本" },
+    { "name": "SPDR ゴールド ミニシェア", "value": 2206, "category": "GLD" },
+    { "name": "SBI-EXE-i グローバルサ", "value": 1, "category": "サウス" },
+    { "name": "XYM", "value": 0, "category": "暗号" },
+    { "name": "iシェアーズ コア 米国総...", "value": 20, "category": "債券" }
+  ],
+  "categories": [
+    { "name": "円", "value": 2852 },
+    { "name": "GLD", "value": 2206 },
+    { "name": "ドル", "value": 580 },
+    { "name": "債券", "value": 382 },
+    { "name": "VT", "value": 441 },
+    { "name": "日本", "value": 7 },
+    { "name": "サウス", "value": 1 }
+  ]
+}
