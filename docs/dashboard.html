@@ -196,7 +196,7 @@ header {
 
 .card-label {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.12em;
@@ -211,7 +211,7 @@ header {
 }
 .card-sub {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--muted);
   margin-top: 6px;
@@ -474,7 +474,7 @@ function makeAllTable(items, total) {
     const col = cat ? catColor(cat) : DEFAULT_COLOR;
     const isNeg = i.value < 0;
     const catCell = cat
-      ? `<td><span class="badge" style="background:${col}22;color:${col}">${cat}</span></td>`
+      ? `<td><span class="badge" style="background:${col}22;color:${col}">${catLabel(cat)}</span></td>`
       : `<td><span class="badge" style="background:rgba(100,116,139,0.15);color:#64748b">—</span></td>`;
     rows += `<tr>
       <td class="name">${i.name}</td>
