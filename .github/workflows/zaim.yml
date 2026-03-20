@@ -1,0 +1,47 @@
+name: Update Asset Dashboard
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 毎日 11:00 JST (UTC+9)
+  workflow_dispatch:      # 手動実行も可能
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Chrome
+        run: |
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run zaim.py
+        env:
+          ZAIM_EMAIL: ${{ secrets.ZAIM_EMAIL }}
+          ZAIM_PASSWORD: ${{ secrets.ZAIM_PASSWORD }}
+          GCP_JSON_KEY: ${{ secrets.GCP_JSON_KEY }}
+          SPREADSHEET_URL: ${{ secrets.SPREADSHEET_URL }}
+          BITBANK_API_KEY: ${{ secrets.BITBANK_API_KEY }}
+          BITBANK_SECRET: ${{ secrets.BITBANK_SECRET }}
+        run: python zaim.py
+
+      - name: Commit and push data.json
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add docs/data.json
+          git diff --staged --quiet || git commit -m "chore: update data.json $(date +'%Y/%m/%d %H:%M')"
+          git push
