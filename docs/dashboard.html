@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>資産ダッシュボード</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
@@ -18,7 +18,7 @@
   --text: #e2e8f0;
   --muted: #64748b;
   --red: #f87171;
-  --mono: 'Space Mono', monospace;
+  --mono: 'JetBrains Mono', monospace;
   --sans: 'Noto Sans JP', sans-serif;
 }
 
@@ -355,7 +355,7 @@ function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
 function fmt(v) { return Math.round(v).toLocaleString('ja-JP'); }
 
 Chart.defaults.color = '#64748b';
-Chart.defaults.font.family = "'Space Mono', monospace";
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
 Chart.defaults.font.weight = 700;
 
 // Register datalabels plugin
@@ -402,7 +402,7 @@ function makeDoughnut(id, items, total) {
             return colors[ctx.dataIndex];
           },
           font: {
-            family: "'Space Mono', monospace",
+            family: "'JetBrains Mono', monospace",
             weight: 700,
             size: 12
           },
@@ -510,20 +510,11 @@ function render(data) {
   const main = document.getElementById('main');
   main.style.display = 'block';
 
-  // accountsからカテゴリ集計を動的に計算（'-'は除外）
-  const catMap = {};
-  data.accounts.forEach(a => {
-    if (!a.category || a.category === '-') return;
-    if (!catMap[a.category]) catMap[a.category] = 0;
-    catMap[a.category] += a.value;
-  });
-  const computedCats = Object.entries(catMap)
-    .map(([name, value]) => ({ name, value }))
-    .filter(c => c.value > 0)
-    .sort((a, b) => b.value - a.value);
+  // data.categories と data.total をそのまま使用（zaim.pyが計算済み）
+  const positiveCats = data.categories.filter(c => c.value > 0);
 
   let catCards = '';
-  computedCats.forEach(c => {
+  positiveCats.forEach(c => {
     const col = catColor(c.name);
     const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
     catCards += `<div class="card">
@@ -565,7 +556,7 @@ function render(data) {
   `;
 
   setTimeout(() => {
-    const ovItems = computedCats.map(c => ({...c, category: c.name}));
+    const ovItems = positiveCats.map(c => ({...c, category: c.name}));
     makeDoughnut('pie-main', ovItems, data.total);
   }, 80);
 }
