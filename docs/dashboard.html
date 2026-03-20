@@ -278,6 +278,11 @@ tr:hover td { background: rgba(56,189,248,0.03); }
   th { padding: 8px 10px; font-size: 0.55rem; }
   td { padding: 10px 10px; font-size: 0.72rem; }
   .bar-bg { min-width: 36px; }
+  .donut-section { padding: 20px 4px 28px; }
+  .donut-wrap { max-width: 100%; }
+  .donut-center-value { font-size: clamp(2rem, 7vw, 3rem); }
+  .donut-center-label { font-size: 0.7rem; }
+  .donut-center-unit { font-size: 0.75rem; }
 }
 
 .badge {
@@ -446,6 +451,11 @@ Chart.register(ChartDataLabels);
 function makeDoughnut(id, items, total) {
   const ctx = document.getElementById(id).getContext('2d');
   const colors = items.map(i => catColor(i.category||i.name));
+  const isMobile = window.innerWidth <= 640;
+  const pad = isMobile ? { top: 28, bottom: 28, left: 48, right: 48 } : { top: 40, bottom: 40, left: 80, right: 80 };
+  const labelSize = isMobile ? 11 : 12;
+  const connectorLen = isMobile ? 8 : 12;
+  const labelOffset = isMobile ? 10 : 14;
 
   return new Chart(ctx, {
     type: 'doughnut',
@@ -465,12 +475,7 @@ function makeDoughnut(id, items, total) {
       maintainAspectRatio: true,
       events: [],
       layout: {
-        padding: {
-          top: 40,
-          bottom: 40,
-          left: 80,
-          right: 80
-        }
+        padding: pad
       },
       plugins: {
         legend: { display: false },
@@ -479,7 +484,7 @@ function makeDoughnut(id, items, total) {
           display: true,
           anchor: 'end',
           align: 'end',
-          offset: 14,
+          offset: labelOffset,
           clamp: true,
           color: function(ctx) {
             return colors[ctx.dataIndex];
@@ -487,7 +492,7 @@ function makeDoughnut(id, items, total) {
           font: {
             family: "'JetBrains Mono', monospace",
             weight: 700,
-            size: 12
+            size: labelSize
           },
           formatter: function(value, ctx) {
             const label = items[ctx.dataIndex] ? catLabel(items[ctx.dataIndex].category || items[ctx.dataIndex].name) : '';
@@ -522,7 +527,7 @@ function makeDoughnut(id, items, total) {
           const startY = centerY + Math.sin(midAngle) * outerRadius;
 
           // End point: slightly further out
-          const endR = outerRadius + 12;
+          const endR = outerRadius + connectorLen;
           const endX = centerX + Math.cos(midAngle) * endR;
           const endY = centerY + Math.sin(midAngle) * endR;
 
