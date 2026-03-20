@@ -559,11 +559,35 @@ const LS_KEY = 'zaim_dash_manual';
 const CAT_KEYS = Object.keys(CAT_CONFIG);
 
 function loadManual() {
+  // 1. URLハッシュを優先
+  if (location.hash.startsWith('#m=')) {
+    try {
+      const raw = JSON.parse(decodeURIComponent(location.hash.slice(3)));
+      if (Array.isArray(raw)) {
+        // 配列形式 [name, cat, value] → オブジェクトに変換
+        const data = raw.map(r => Array.isArray(r)
+          ? { name: r[0]||'', category: r[1]||'', value: r[2]||'' }
+          : r
+        );
+        try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch {}
+        return data;
+      }
+    } catch {}
+  }
+  // 2. localStorageにフォールバック
   try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
   catch { return []; }
 }
 function saveManual(rows) {
-  localStorage.setItem(LS_KEY, JSON.stringify(rows));
+  try { localStorage.setItem(LS_KEY, JSON.stringify(rows)); } catch {}
+  // 入力がある行だけハッシュに保存（URL短縮）
+  const compact = rows.filter(r => r.name || r.value).map(r => [r.name, r.category, r.value]);
+  if (compact.length > 0) {
+    const full = rows.map(r => [r.name, r.category, r.value]);
+    history.replaceState(null, '', '#m=' + encodeURIComponent(JSON.stringify(full)));
+  } else {
+    history.replaceState(null, '', location.pathname);
+  }
 }
 
 function getManualRows() {
@@ -786,7 +810,8 @@ function render(data) {
   });
   document.addEventListener('click', e => {
     if (e.target.id === 'btn-clear-manual') {
-      localStorage.removeItem(LS_KEY);
+      try { localStorage.removeItem(LS_KEY); } catch {}
+      history.replaceState(null, '', location.pathname);
       for (let i = 0; i < MANUAL_ROWS; i++) {
         const n = document.getElementById('m-name-'+i);
         const c = document.getElementById('m-cat-'+i);
