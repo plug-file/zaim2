@@ -18,6 +18,16 @@ PASSWORD = os.environ.get("ZAIM_PASSWORD")
 BITBANK_API_KEY = os.environ.get("BITBANK_API_KEY")
 BITBANK_SECRET = os.environ.get("BITBANK_SECRET")
 
+# --- 手動入力項目（万円単位） ---
+# Zaimで自動取得できない資産をここに追加してください
+# 形式: {"name": "口座名", "value": 金額(万円), "category": "カテゴリ"}
+# カテゴリ: 円, VT, ドル, 債券, GLD, 暗号, 日本, サウス, -
+MANUAL_ACCOUNTS = [
+    {"name": "BITGET",   "value": 25,  "category": "ドル"},
+    {"name": "ロボプロ",  "value": 10,  "category": "ドル"},
+    {"name": "SBI FX",   "value": 100, "category": "ドル"},
+]
+
 # --- 口座名 → カテゴリ のマッピング ---
 # Zaimの口座名の一部に合わせて編集してください
 ACCOUNT_CATEGORY = {
@@ -177,7 +187,12 @@ def main():
             GOLD_GRAMS = 800  # ← 保有グラム数を変更してください
             accounts.append({"name": "ゴールド (田中貴金属)", "value": round(gold_price * GOLD_GRAMS / 10000), "category": "GLD"})
 
-        # 7. data.json出力
+        # 7. 手動入力項目を追加
+        for m in MANUAL_ACCOUNTS:
+            accounts.append({"name": m["name"], "value": m["value"], "category": m["category"]})
+            print(f"  手動追加: {m['name']} {m['value']}万円 [{m['category']}]")
+
+        # 8. data.json出力
         now_str = datetime.now(ZoneInfo("Asia/Tokyo")).strftime('%Y/%m/%d %H:%M')
         output = build_json(accounts, now_str)
         os.makedirs("docs", exist_ok=True)
