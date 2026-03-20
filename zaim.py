@@ -2,70 +2,81 @@ import os
 import time
 import json
 import requests
-import gspread
 import ccxt
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from oauth2client.service_account import ServiceAccountCredentials
 
 # --- 設定情報（GitHub Secretsから取得） ---
 EMAIL = os.environ.get("ZAIM_EMAIL")
 PASSWORD = os.environ.get("ZAIM_PASSWORD")
-GCP_JSON_DATA = os.environ.get("GCP_JSON_KEY")
-SPREADSHEET_URL = os.environ.get("SPREADSHEET_URL")
 BITBANK_API_KEY = os.environ.get("BITBANK_API_KEY")
 BITBANK_SECRET = os.environ.get("BITBANK_SECRET")
 
-# --- カテゴリ定義（口座名 → カテゴリ） ---
-# スプレッドシートのD列の値をもとに分類
-CATEGORY_MAP = {
-    "円":       ["円"],
-    "VT":       ["VT"],
-    "ドル":     ["ドル"],
-    "債券":     ["債券"],
-    "日本":     ["日本"],
-    "GLD":      ["GLD"],
-    "サウス":   ["サウス"],
-    "暗号":     ["暗号"],
+# --- 口座名 → カテゴリ のマッピング ---
+# Zaimの口座名の一部に合わせて編集してください
+ACCOUNT_CATEGORY = {
+    "住信SBI ネット銀行 代": "円",
+    "住信SBI ネット銀行 定": "円",
+    "楽天銀行":               "円",
+    "現金残高等":             "円",
+    "モバイルSuica":          "円",
+    "楽天証券":               "VT",
+    "eMAXIS Slim 全世界":     "VT",
+    "SBI岡三・US":            "ドル",
+    "米ドル現金":             "ドル",
+    "その他合計":             "ドル",
+    "三菱 UFJ e スマート":    "債券",
+    "マネックス証券":         "債券",
+    "確定拠出年金":           "債券",
+    "iシェアーズ コア 米国":  "債券",
+    "楽天":                   "日本",
+    "225投信":                "日本",
+    "SPDR ゴールド":          "GLD",
+    "SBI-EXE-i":              "サウス",
+    "XYM":                    "暗号",
+    "JPY (bitbank)":          "円",
+    "CRYPTO (bitbank)":       "暗号",
+    "ゴールド (田中貴金属)":  "GLD",
 }
 
-# --- 金価格取得ロジック ---
-def get_gold_price():
-    url = "https://gold.tanaka.co.jp/commodity/souba/d-gold.php"
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
-        price_table = soup.find('table')
-        if price_table:
-            price_cell = price_table.find('td', class_='retail_tax')
-            if price_cell:
-                return price_cell.text.strip().split()[0].replace(',', '')
-        return "0"
-    except Exception:
-        return "0"
+def categorize(name):
+    for key, cat in ACCOUNT_CATEGORY.items():
+        if key in name:
+            return cat
+    return "-"
 
-# --- bitbank残高取得ロジック ---
-def get_bitbank_balance():
+# --- 金価格取得 ---
+def get_gold_price():
     try:
-        bitbank = ccxt.bitbank({'apiKey': BITBANK_API_KEY, 'secret': BITBANK_SECRET})
-        result = bitbank.fetch_balance()
+        res = requests.get("https://gold.tanaka.co.jp/commodity/souba/d-gold.php", timeout=10)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        cell = soup.find('td', class_='retail_tax')
+        if cell:
+            return int(cell.text.strip().split()[0].replace(',', ''))
+    except Exception as e:
+        print(f"金価格取得エラー: {e}")
+    return 0
+
+# --- bitbank残高取得 ---
+def get_bitbank_balance():
+    if not BITBANK_API_KEY or not BITBANK_SECRET:
+        return 0, 0
+    try:
+        bb = ccxt.bitbank({'apiKey': BITBANK_API_KEY, 'secret': BITBANK_SECRET})
+        result = bb.fetch_balance()
         jpy = result['total'].get('JPY', 0)
-        pairs = ['BTC/JPY', 'XRP/JPY', 'ETH/JPY', 'XYM/JPY', 'GALA/JPY', 'SUI/JPY']
         crypto_total = 0
-        for pair in pairs:
-            symbol = pair.split('/')[0]
-            amount = result['total'].get(symbol, 0)
-            if amount > 0:
-                last_price = bitbank.fetch_ticker(pair)['last']
-                crypto_total += amount * last_price
+        for pair in ['BTC/JPY', 'XRP/JPY', 'ETH/JPY', 'XYM/JPY', 'GALA/JPY', 'SUI/JPY']:
+            sym = pair.split('/')[0]
+            amt = result['total'].get(sym, 0)
+            if amt > 0:
+                crypto_total += amt * bb.fetch_ticker(pair)['last']
         return jpy, crypto_total
     except Exception as e:
         print(f"Bitbankエラー: {e}")
@@ -83,37 +94,14 @@ def setup_browser():
     browser.implicitly_wait(10)
     return browser
 
-# --- データをJSONに変換する関数 ---
-def build_json(raw_data, updated_at):
-    """
-    raw_data: [["口座名", 万円値, "カテゴリ"], ...] の形式
-    スプレッドシートのA列=名前, C列=万円, D列=カテゴリに対応
-    """
-    accounts = []
-    for row in raw_data:
-        if len(row) >= 2:
-            name = str(row[0]).strip()
-            try:
-                val_man = float(str(row[1]).replace(',', '').replace('¥', ''))
-            except:
-                val_man = 0
-            category = str(row[2]).strip() if len(row) >= 3 else "-"
-            if name and val_man != 0:
-                accounts.append({
-                    "name": name,
-                    "value": round(val_man),
-                    "category": category
-                })
-
-    # カテゴリ別集計
+# --- JSONビルド ---
+def build_json(accounts, updated_at):
     cat_totals = {}
     for acc in accounts:
         cat = acc["category"]
-        if cat not in ("-", ""):
+        if cat != "-":
             cat_totals[cat] = cat_totals.get(cat, 0) + acc["value"]
-
     total = sum(cat_totals.values())
-
     return {
         "updated": updated_at,
         "total": round(total),
@@ -127,10 +115,11 @@ def build_json(raw_data, updated_at):
 # --- メイン処理 ---
 def main():
     browser = setup_browser()
-    raw_data = []  # [name, 万円, カテゴリ]
+    accounts = []
 
     try:
         # 1. Zaimログイン
+        print("Zaimにログイン中...")
         browser.get('https://zaim.net/home')
         browser.find_element(By.NAME, "email").send_keys(EMAIL)
         browser.find_element(By.NAME, "password").send_keys(PASSWORD)
@@ -138,87 +127,62 @@ def main():
         time.sleep(3)
 
         # 2. 更新ボタン押下
-        print("更新中...")
         try:
-            reload_btn = browser.find_element(By.CLASS_NAME, "reload-btn")
-            reload_btn.click()
+            browser.find_element(By.CLASS_NAME, "reload-btn").click()
             WebDriverWait(browser, 10).until(EC.alert_is_present()).accept()
-            print("30秒待機...")
+            print("更新中... 30秒待機")
             time.sleep(30)
         except:
-            print("更新ボタンなし")
+            print("更新ボタンなし、スキップ")
 
-        # 3. データ取得
+        # 3. ホーム画面から口座残高取得
         browser.get('https://zaim.net/home')
-        names = [e.text for e in browser.find_elements(By.XPATH, "//div[@class='name']")]
+        names  = [e.text for e in browser.find_elements(By.XPATH, "//div[@class='name']")]
         values = [e.text.replace('¥', '').replace(',', '') for e in browser.find_elements(By.XPATH, "//div[contains(@class, 'value')]")]
-        for n, v in zip(names, values):
-            raw_data.append([n, v, ""])  # カテゴリはスプレッドシート側で付与されるため空
+        for name, val in zip(names, values):
+            try:
+                val_man = round(int(val) / 10000)
+            except:
+                continue
+            accounts.append({"name": name, "value": val_man, "category": categorize(name)})
 
-        # 証券ページ詳細
+        # 4. 証券ページ詳細取得
         browser.get('https://zaim.net/securities/7547235')
-        tables = browser.find_elements(By.CLASS_NAME, "table")
-        for table in tables:
-            rows = table.find_elements(By.TAG_NAME, "tr")[1:]
-            for row in rows:
+        for table in browser.find_elements(By.CLASS_NAME, "table"):
+            for row in table.find_elements(By.TAG_NAME, "tr")[1:]:
                 cols = row.find_elements(By.TAG_NAME, "td")
                 if len(cols) >= 5:
-                    name = cols[0].text
-                    val = cols[-2].text.replace("¥", "").replace(",", "")
-                    raw_data.append([name, val, ""])
+                    name, raw = cols[0].text, cols[-2].text.replace("¥", "").replace(",", "")
                 elif len(cols) >= 2:
-                    name = cols[0].text
-                    val = cols[-1].text.replace("¥", "").replace(",", "")
-                    raw_data.append([name, val, ""])
-
-        # 4. 外部データ統合
-        jpy, crypto = get_bitbank_balance()
-        raw_data.append(["JPY (bitbank)", jpy / 10000, "円"])
-        raw_data.append(["CRYPTO (bitbank)", crypto / 10000, "暗号"])
-
-        gold_price = get_gold_price()
-        gold_val = int(gold_price) * 800 / 10000
-        raw_data.append(["SPDR ゴールド", gold_val, "GLD"])
-
-        now_str = datetime.now(ZoneInfo("Asia/Tokyo")).strftime('%Y/%m/%d %H:%M')
-
-        # 5. スプレッドシート更新（従来通り）
-        print("スプレッドシート更新中...")
-        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(GCP_JSON_DATA), scope)
-        client = gspread.authorize(creds)
-        worksheet = client.open_by_url(SPREADSHEET_URL).sheet1
-
-        # スプレッドシートからカテゴリ付きデータを再取得してJSONを作成
-        # (スプレッドシートのzaimタブが整理されたデータを持っている場合)
-        zaim_sheet = client.open_by_url(SPREADSHEET_URL).worksheet("zaim")
-        all_values = zaim_sheet.get_all_values()
-
-        # A=名前, B=残高(円), C=万円換算, D=カテゴリ の形式を想定
-        structured = []
-        for row in all_values[1:]:  # ヘッダー行をスキップ
-            if len(row) >= 4 and row[0]:
+                    name, raw = cols[0].text, cols[-1].text.replace("¥", "").replace(",", "")
+                else:
+                    continue
                 try:
-                    val_man = float(row[2].replace(',', '')) if row[2] else 0
+                    val_man = round(int(raw) / 10000)
                 except:
-                    val_man = 0
-                structured.append([row[0], val_man, row[3] if len(row) > 3 else ""])
+                    continue
+                accounts.append({"name": name, "value": val_man, "category": categorize(name)})
 
-        output = build_json(structured, now_str)
+        # 5. bitbank残高
+        jpy, crypto = get_bitbank_balance()
+        if jpy > 0:
+            accounts.append({"name": "JPY (bitbank)", "value": round(jpy / 10000), "category": "円"})
+        if crypto > 0:
+            accounts.append({"name": "CRYPTO (bitbank)", "value": round(crypto / 10000), "category": "暗号"})
 
-        # JSONファイルを docs/ ディレクトリに出力（GitHub Pages用）
+        # 6. 金価格（保有量800gで固定 → 実際の保有量に変更してください）
+        gold_price = get_gold_price()
+        if gold_price > 0:
+            GOLD_GRAMS = 800  # ← 保有グラム数を変更してください
+            accounts.append({"name": "ゴールド (田中貴金属)", "value": round(gold_price * GOLD_GRAMS / 10000), "category": "GLD"})
+
+        # 7. data.json出力
+        now_str = datetime.now(ZoneInfo("Asia/Tokyo")).strftime('%Y/%m/%d %H:%M')
+        output = build_json(accounts, now_str)
         os.makedirs("docs", exist_ok=True)
         with open("docs/data.json", "w", encoding="utf-8") as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
-        print(f"docs/data.json を出力しました (total: {output['total']}万円)")
-
-        # 従来のスプレッドシート更新も継続
-        worksheet.clear()
-        data_to_write = [[r[0], r[1]] for r in raw_data]
-        worksheet.insert_rows(data_to_write, 1)
-        worksheet.update('E1', [[now_str]])
-
-        print("すべて完了しました。")
+        print(f"完了: docs/data.json 出力（総資産 {output['total']}万円）")
 
     finally:
         browser.quit()
