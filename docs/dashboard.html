@@ -339,81 +339,6 @@ tr:hover td { background: rgba(56,189,248,0.03); }
 .card:nth-child(4) { animation-delay: 0.20s; }
 .card:nth-child(5) { animation-delay: 0.25s; }
 .card:nth-child(6) { animation-delay: 0.30s; }
-
-/* ── Manual Input Rows ── */
-.manual-input {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 6px 10px;
-  width: 100%;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.manual-input:focus {
-  border-color: var(--accent);
-}
-.manual-input::placeholder {
-  color: var(--muted);
-  opacity: 0.5;
-}
-.manual-input-num {
-  text-align: right;
-  font-family: var(--mono);
-}
-select.manual-input {
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2364748b'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 24px;
-}
-select.manual-input option {
-  background: var(--surface);
-  color: var(--text);
-}
-.manual-row td {
-  padding: 6px 8px;
-  border-bottom: 1px solid rgba(56,189,248,0.05);
-  vertical-align: middle;
-}
-.manual-section-label {
-  padding: 12px 20px 8px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.manual-section-label span {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.btn-clear {
-  background: transparent;
-  border: 1px solid rgba(248,113,113,0.3);
-  border-radius: 4px;
-  color: var(--red);
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  cursor: pointer;
-  letter-spacing: 0.08em;
-  transition: background 0.2s;
-}
-.btn-clear:hover {
-  background: rgba(248,113,113,0.1);
-}
 </style>
 </head>
 <body>
@@ -554,76 +479,7 @@ function makeDoughnut(id, items, total) {
   });
 }
 
-const MANUAL_ROWS = 10;
-const LS_KEY = 'zaim_dash_manual';
-const CAT_KEYS = Object.keys(CAT_CONFIG);
-
-function loadManual() {
-  // 1. URLハッシュを優先
-  if (location.hash.startsWith('#m=')) {
-    try {
-      const raw = JSON.parse(decodeURIComponent(location.hash.slice(3)));
-      if (Array.isArray(raw)) {
-        // 配列形式 [name, cat, value] → オブジェクトに変換
-        const data = raw.map(r => Array.isArray(r)
-          ? { name: r[0]||'', category: r[1]||'', value: r[2]||'' }
-          : r
-        );
-        try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch {}
-        return data;
-      }
-    } catch {}
-  }
-  // 2. localStorageにフォールバック
-  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
-  catch { return []; }
-}
-function saveManual(rows) {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(rows)); } catch {}
-  // 入力がある行だけハッシュに保存（URL短縮）
-  const compact = rows.filter(r => r.name || r.value).map(r => [r.name, r.category, r.value]);
-  if (compact.length > 0) {
-    const full = rows.map(r => [r.name, r.category, r.value]);
-    history.replaceState(null, '', '#m=' + encodeURIComponent(JSON.stringify(full)));
-  } else {
-    history.replaceState(null, '', location.pathname);
-  }
-}
-
-function getManualRows() {
-  const rows = [];
-  for (let i = 0; i < MANUAL_ROWS; i++) {
-    const name = document.getElementById('m-name-'+i);
-    const cat  = document.getElementById('m-cat-'+i);
-    const amt  = document.getElementById('m-amt-'+i);
-    if (name && cat && amt) {
-      rows.push({ name: name.value.trim(), category: cat.value, value: amt.value.trim() });
-    }
-  }
-  return rows;
-}
-
-function makeManualInputRows(saved) {
-  let rows = '';
-  for (let i = 0; i < MANUAL_ROWS; i++) {
-    const s = saved[i] || { name: '', category: '', value: '' };
-    let catOpts = '<option value="">—</option>';
-    CAT_KEYS.forEach(k => {
-      const sel = s.category === k ? ' selected' : '';
-      catOpts += `<option value="${k}"${sel}>${catLabel(k)}</option>`;
-    });
-    rows += `<tr class="manual-row">
-      <td><input id="m-name-${i}" class="manual-input" placeholder="口座名" value="${s.name}"></td>
-      <td><select id="m-cat-${i}" class="manual-input">${catOpts}</select></td>
-      <td><input id="m-amt-${i}" class="manual-input manual-input-num" placeholder="0" value="${s.value}" inputmode="numeric"></td>
-      <td class="r" style="color:var(--muted)" id="m-pct-${i}"></td>
-      <td id="m-bar-${i}"></td>
-    </tr>`;
-  }
-  return rows;
-}
-
-function makeAllTable(items, total, savedManual) {
+function makeAllTable(items, total) {
   let rows = '';
   items.filter(i => i.value !== 0).forEach(i => {
     const pct = total > 0 ? ((Math.abs(i.value) / total) * 100).toFixed(1) : 0;
@@ -646,88 +502,8 @@ function makeAllTable(items, total, savedManual) {
     <div class="table-scroll"><table>
       <thead><tr><th>NAME</th><th>CATEGORY</th><th class="r">AMOUNT</th><th class="r">RATIO</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
-      <tbody id="manual-tbody">
-        <tr><td colspan="5"><div class="manual-section-label"><span>MANUAL ENTRIES</span><button class="btn-clear" id="btn-clear-manual">CLEAR ALL</button></div></td></tr>
-        ${makeManualInputRows(savedManual)}
-      </tbody>
     </table></div>
   </div>`;
-}
-
-// --- 再計算してOVERVIEW・ドーナツ・手動行の%を更新 ---
-function recalcAll(baseData) {
-  // 手動行の値を取得
-  const manualRows = getManualRows();
-  saveManual(manualRows);
-
-  // ベースのカテゴリ合計をコピー
-  const catTotals = {};
-  baseData.categories.forEach(c => { catTotals[c.name] = c.value; });
-
-  // 手動行を加算
-  manualRows.forEach(r => {
-    const v = parseInt(r.value) || 0;
-    if (r.category && v !== 0) {
-      catTotals[r.category] = (catTotals[r.category] || 0) + v;
-    }
-  });
-
-  const newTotal = Object.values(catTotals).reduce((a, b) => a + b, 0);
-
-  // OVERVIEW カード更新
-  const grid = document.querySelector('.summary-grid');
-  if (grid) {
-    let catCards = '';
-    Object.entries(catTotals)
-      .filter(([, v]) => v > 0)
-      .sort((a, b) => b[1] - a[1])
-      .forEach(([name, value]) => {
-        const col = catColor(name);
-        const pct = newTotal > 0 ? ((value / newTotal) * 100).toFixed(1) : 0;
-        catCards += `<div class="card">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,${col},transparent)"></div>
-          <div class="card-label">${catLabel(name)}</div>
-          <div class="card-value" style="color:${col}">${fmt(value)}<span style="font-size:0.65rem;color:var(--muted);margin-left:4px">万円</span></div>
-          <div class="card-sub">${pct}%</div>
-        </div>`;
-      });
-    grid.innerHTML = catCards;
-  }
-
-  // TOTAL 更新
-  const cv = document.querySelector('.donut-center-value');
-  if (cv) cv.textContent = fmt(newTotal);
-
-  // 手動行の % とバー更新
-  for (let i = 0; i < MANUAL_ROWS; i++) {
-    const v = parseInt((document.getElementById('m-amt-'+i)||{}).value) || 0;
-    const cat = (document.getElementById('m-cat-'+i)||{}).value || '';
-    const pctEl = document.getElementById('m-pct-'+i);
-    const barEl = document.getElementById('m-bar-'+i);
-    if (pctEl && barEl) {
-      if (v !== 0 && newTotal > 0) {
-        const pct = ((Math.abs(v) / newTotal) * 100).toFixed(1);
-        const col = cat ? catColor(cat) : DEFAULT_COLOR;
-        pctEl.textContent = pct + '%';
-        barEl.innerHTML = `<div class="bar-bg" style="min-width:50px"><div class="bar-fill" style="width:${Math.min(parseFloat(pct)*1.5,100)}%;background:${col}"></div></div>`;
-      } else {
-        pctEl.textContent = '';
-        barEl.innerHTML = '';
-      }
-    }
-  }
-
-  // ドーナツ再描画
-  const positiveCats = Object.entries(catTotals)
-    .filter(([, v]) => v > 0)
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, value]) => ({ name, value, category: name }));
-  const canvas = document.getElementById('pie-main');
-  if (canvas) {
-    const existing = Chart.getChart(canvas);
-    if (existing) existing.destroy();
-    makeDoughnut('pie-main', positiveCats, newTotal);
-  }
 }
 
 async function init() {
@@ -747,7 +523,6 @@ function render(data) {
   const main = document.getElementById('main');
   main.style.display = 'block';
 
-  const savedManual = loadManual();
   const positiveCats = data.categories.filter(c => c.value > 0);
 
   let catCards = '';
@@ -789,40 +564,13 @@ function render(data) {
     <div class="divider"></div>
 
     <div class="section-title">— ALL ACCOUNTS</div>
-    ${makeAllTable(data.accounts, data.total, savedManual)}
+    ${makeAllTable(data.accounts, data.total)}
   `;
 
   setTimeout(() => {
     const ovItems = positiveCats.map(c => ({...c, category: c.name}));
     makeDoughnut('pie-main', ovItems, data.total);
-
-    // 初回: 保存済み手動行があれば再計算
-    const hasManual = savedManual.some(r => r.name || r.value);
-    if (hasManual) recalcAll(data);
   }, 80);
-
-  // イベント登録
-  document.addEventListener('input', e => {
-    if (e.target.closest('#manual-tbody')) recalcAll(data);
-  });
-  document.addEventListener('change', e => {
-    if (e.target.closest('#manual-tbody')) recalcAll(data);
-  });
-  document.addEventListener('click', e => {
-    if (e.target.id === 'btn-clear-manual') {
-      try { localStorage.removeItem(LS_KEY); } catch {}
-      history.replaceState(null, '', location.pathname);
-      for (let i = 0; i < MANUAL_ROWS; i++) {
-        const n = document.getElementById('m-name-'+i);
-        const c = document.getElementById('m-cat-'+i);
-        const a = document.getElementById('m-amt-'+i);
-        if (n) n.value = '';
-        if (c) c.value = '';
-        if (a) a.value = '';
-      }
-      recalcAll(data);
-    }
-  });
 }
 
 init();
