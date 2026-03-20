@@ -32,8 +32,6 @@ jobs:
         env:
           ZAIM_EMAIL: ${{ secrets.ZAIM_EMAIL }}
           ZAIM_PASSWORD: ${{ secrets.ZAIM_PASSWORD }}
-          GCP_JSON_KEY: ${{ secrets.GCP_JSON_KEY }}
-          SPREADSHEET_URL: ${{ secrets.SPREADSHEET_URL }}
           BITBANK_API_KEY: ${{ secrets.BITBANK_API_KEY }}
           BITBANK_SECRET: ${{ secrets.BITBANK_SECRET }}
         run: python zaim.py
