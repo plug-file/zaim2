@@ -96,62 +96,63 @@ header {
 
 .timestamp {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.05em;
 }
 
-/* ── Charts Row ── */
-.charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-@media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
-
-.chart-card {
+/* ── Donut Section ── */
+.donut-section {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 20px;
+  padding: 32px 20px 40px;
+  margin-bottom: 28px;
   animation: fadeUp 0.4s ease both;
 }
 
-.chart-title {
+.donut-section-title {
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--accent);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
+  text-align: center;
 }
 
-/* ── Donut with center text ── */
-.donut-wrap {
+.donut-outer {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
-  max-width: 340px;
+  max-width: 560px;
   margin: 0 auto;
 }
-.donut-wrap canvas {
+
+.donut-canvas-wrap {
   position: relative;
-  z-index: 2;
+  width: 56%;
+  margin: 0 auto;
 }
+
+.donut-canvas-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+}
+
 .donut-center {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  z-index: 3;
   pointer-events: none;
+  z-index: 3;
 }
 .donut-center-label {
   font-family: var(--mono);
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.12em;
@@ -159,57 +160,29 @@ header {
 }
 .donut-center-value {
   font-family: var(--mono);
-  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
   font-weight: 700;
   color: var(--text);
   line-height: 1.2;
+  margin-top: 2px;
 }
 .donut-center-unit {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--muted);
 }
 
-/* ── Callout labels ── */
-.callout-layer {
+/* ── Callouts ── */
+.callout-svg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   z-index: 4;
-  pointer-events: none;
+  overflow: visible;
 }
-.callout {
-  position: absolute;
-  white-space: nowrap;
-  pointer-events: none;
-}
-.callout-line {
-  position: absolute;
-  height: 1px;
-  top: 50%;
-}
-.callout-text {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  font-weight: 700;
-  line-height: 1.3;
-}
-.callout-value {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--text);
-}
-.callout-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* ── Bar chart container ── */
-.bar-container { position: relative; height: 300px; }
 
 /* ── Section Title ── */
 .section-title {
@@ -251,14 +224,12 @@ header {
   text-transform: uppercase;
   margin-bottom: 8px;
 }
-
 .card-value {
   font-family: var(--mono);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1;
 }
-
 .card-sub {
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -282,12 +253,10 @@ header {
   overflow: hidden;
   animation: fadeUp 0.4s ease both;
 }
-
 .table-header {
   padding: 14px 20px;
   border-bottom: 1px solid var(--border);
 }
-
 .table-title {
   font-family: var(--mono);
   font-size: 0.72rem;
@@ -296,10 +265,8 @@ header {
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-
 .table-scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
-
 th {
   font-family: var(--mono);
   font-size: 0.6rem;
@@ -313,7 +280,6 @@ th {
   white-space: nowrap;
 }
 th.r { text-align: right; }
-
 td {
   padding: 12px 16px;
   border-bottom: 1px solid rgba(56,189,248,0.05);
@@ -325,7 +291,6 @@ td {
 }
 td.r { text-align: right; }
 td.name { font-family: var(--sans); font-size: 0.78rem; }
-
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(56,189,248,0.03); }
 
@@ -338,7 +303,6 @@ tr:hover td { background: rgba(56,189,248,0.03); }
   border-radius: 3px;
   letter-spacing: 0.08em;
 }
-
 .neg { color: var(--red); }
 
 .bar-bg {
@@ -378,7 +342,6 @@ tr:hover td { background: rgba(56,189,248,0.03); }
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 .card:nth-child(1) { animation-delay: 0.05s; }
 .card:nth-child(2) { animation-delay: 0.10s; }
 .card:nth-child(3) { animation-delay: 0.15s; }
@@ -416,77 +379,142 @@ Chart.defaults.color = '#64748b';
 Chart.defaults.font.family = "'Space Mono', monospace";
 Chart.defaults.font.weight = 700;
 
-// ── Callout label builder ──
-function buildCallouts(containerId, items, total, canvasSize) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  el.innerHTML = '';
+// ── SVG Callout builder (no overlap) ──
+function buildCallouts(svgEl, items, total, outerW, outerH, canvasW, canvasH) {
+  while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
 
-  const cx = canvasSize / 2;
-  const cy = canvasSize / 2;
-  const outerR = canvasSize * 0.42;
-  const labelR = canvasSize * 0.62;
+  // donut center & radius in outer coordinate space
+  const offsetX = (outerW - canvasW) / 2;
+  const offsetY = (outerH - canvasH) / 2;
+  const cx = offsetX + canvasW / 2;
+  const cy = offsetY + canvasH / 2;
+  const donutR = canvasW * 0.42;
 
+  svgEl.setAttribute('viewBox', `0 0 ${outerW} ${outerH}`);
+
+  const leftItems = [];
+  const rightItems = [];
   let cumAngle = -Math.PI / 2;
 
-  items.forEach((item, i) => {
+  items.forEach(item => {
     const pct = total > 0 ? item.value / total : 0;
     const sliceAngle = pct * Math.PI * 2;
     const midAngle = cumAngle + sliceAngle / 2;
     cumAngle += sliceAngle;
 
     const col = catColor(item.category || item.name);
-
-    // Point on outer edge of donut
-    const edgeX = cx + Math.cos(midAngle) * outerR;
-    const edgeY = cy + Math.sin(midAngle) * outerR;
-
-    // Label position
-    const lx = cx + Math.cos(midAngle) * labelR;
-    const ly = cy + Math.sin(midAngle) * labelR;
-
+    const edgeX = cx + Math.cos(midAngle) * donutR;
+    const edgeY = cy + Math.sin(midAngle) * donutR;
     const isRight = Math.cos(midAngle) >= 0;
 
-    const callout = document.createElement('div');
-    callout.className = 'callout';
-    callout.style.left = lx + 'px';
-    callout.style.top = ly + 'px';
-    callout.style.transform = isRight ? 'translate(0, -50%)' : 'translate(-100%, -50%)';
-
-    callout.innerHTML = `
-      <div class="callout-text" style="color:${col};${isRight ? 'padding-left:10px' : 'padding-right:10px;text-align:right'}">${catLabel(item.category||item.name)}</div>
-      <div class="callout-value" style="${isRight ? 'padding-left:10px' : 'padding-right:10px;text-align:right'}">${fmt(item.value)} <span style="font-size:0.55rem;color:var(--muted)">万円</span> <span style="font-size:0.58rem;color:${col}">${(pct*100).toFixed(1)}%</span></div>
-    `;
-
-    el.appendChild(callout);
-
-    // SVG line from edge to label
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('style', 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1');
-    svg.setAttribute('viewBox', `0 0 ${canvasSize} ${canvasSize}`);
-
-    const kx = lx + (isRight ? 4 : -4);
-    const ky = ly;
-
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', edgeX);
-    line.setAttribute('y1', edgeY);
-    line.setAttribute('x2', kx);
-    line.setAttribute('y2', ky);
-    line.setAttribute('stroke', col);
-    line.setAttribute('stroke-width', '1');
-    line.setAttribute('opacity', '0.5');
-    svg.appendChild(line);
-
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', edgeX);
-    circle.setAttribute('cy', edgeY);
-    circle.setAttribute('r', '3');
-    circle.setAttribute('fill', col);
-    svg.appendChild(circle);
-
-    el.appendChild(svg);
+    const entry = { item, pct, col, edgeX, edgeY, midAngle, isRight };
+    if (isRight) rightItems.push(entry);
+    else leftItems.push(entry);
   });
+
+  // Sort each side by Y
+  leftItems.sort((a, b) => a.edgeY - b.edgeY);
+  rightItems.sort((a, b) => a.edgeY - b.edgeY);
+
+  const lineH = outerH * 0.068;
+  const fontSize = Math.max(11, outerW * 0.024);
+  const subFontSize = Math.max(13, outerW * 0.028);
+  const minGap = lineH * 2.2;
+
+  function spreadY(entries) {
+    if (entries.length === 0) return;
+    // Assign initial Y, then push apart to avoid overlap
+    const totalNeeded = entries.length * minGap;
+    const topBound = Math.max(10, cy - totalNeeded / 2);
+    entries.forEach((e, i) => {
+      e.labelY = topBound + i * minGap;
+    });
+    // Clamp within bounds
+    entries.forEach(e => {
+      e.labelY = Math.max(lineH, Math.min(outerH - lineH, e.labelY));
+    });
+  }
+
+  spreadY(leftItems);
+  spreadY(rightItems);
+
+  const rightX = offsetX + canvasW + (outerW - offsetX - canvasW) * 0.15;
+  const leftX = offsetX * 0.85;
+
+  function drawEntry(e, labelX, align) {
+    const col = e.col;
+
+    // Dot on edge
+    const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    dot.setAttribute('cx', e.edgeX);
+    dot.setAttribute('cy', e.edgeY);
+    dot.setAttribute('r', '3.5');
+    dot.setAttribute('fill', col);
+    svgEl.appendChild(dot);
+
+    // Elbow line: edge → horizontal anchor → label
+    const elbowX = align === 'right' ? labelX - 6 : labelX + 6;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M${e.edgeX},${e.edgeY} L${elbowX},${e.labelY}`);
+    path.setAttribute('stroke', col);
+    path.setAttribute('stroke-width', '1.2');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('opacity', '0.45');
+    svgEl.appendChild(path);
+
+    // Horizontal tick
+    const tickEnd = align === 'right' ? labelX + 4 : labelX - 4;
+    const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    tick.setAttribute('x1', elbowX);
+    tick.setAttribute('y1', e.labelY);
+    tick.setAttribute('x2', tickEnd);
+    tick.setAttribute('y2', e.labelY);
+    tick.setAttribute('stroke', col);
+    tick.setAttribute('stroke-width', '1.2');
+    tick.setAttribute('opacity', '0.45');
+    svgEl.appendChild(tick);
+
+    const anchor = align === 'right' ? 'start' : 'end';
+    const textX = align === 'right' ? labelX + 8 : labelX - 8;
+
+    // Category name
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', textX);
+    label.setAttribute('y', e.labelY - 4);
+    label.setAttribute('text-anchor', anchor);
+    label.setAttribute('fill', col);
+    label.setAttribute('font-family', "'Space Mono', monospace");
+    label.setAttribute('font-size', fontSize);
+    label.setAttribute('font-weight', '700');
+    label.textContent = catLabel(e.item.category || e.item.name);
+    svgEl.appendChild(label);
+
+    // Value + pct
+    const valText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    valText.setAttribute('x', textX);
+    valText.setAttribute('y', e.labelY + subFontSize + 1);
+    valText.setAttribute('text-anchor', anchor);
+    valText.setAttribute('fill', '#e2e8f0');
+    valText.setAttribute('font-family', "'Space Mono', monospace");
+    valText.setAttribute('font-size', subFontSize);
+    valText.setAttribute('font-weight', '700');
+    valText.textContent = `${fmt(e.item.value)}万`;
+    svgEl.appendChild(valText);
+
+    const pctText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    pctText.setAttribute('x', textX);
+    pctText.setAttribute('y', e.labelY + subFontSize * 2 + 4);
+    pctText.setAttribute('text-anchor', anchor);
+    pctText.setAttribute('fill', col);
+    pctText.setAttribute('font-family', "'Space Mono', monospace");
+    pctText.setAttribute('font-size', fontSize);
+    pctText.setAttribute('font-weight', '700');
+    pctText.textContent = `${(e.pct * 100).toFixed(1)}%`;
+    svgEl.appendChild(pctText);
+  }
+
+  rightItems.forEach(e => drawEntry(e, rightX, 'right'));
+  leftItems.forEach(e => drawEntry(e, leftX, 'left'));
 }
 
 function makeDoughnut(id, items, total) {
@@ -511,8 +539,8 @@ function makeDoughnut(id, items, total) {
         legend: { display: false },
         tooltip: {
           backgroundColor: '#0d1520',
-          titleFont: { family: "'Space Mono', monospace", weight: 700, size: 11 },
-          bodyFont: { family: "'Space Mono', monospace", weight: 700, size: 11 },
+          titleFont: { family: "'Space Mono', monospace", weight: 700, size: 12 },
+          bodyFont: { family: "'Space Mono', monospace", weight: 700, size: 12 },
           borderColor: 'rgba(56,189,248,0.2)',
           borderWidth: 1,
           padding: 10,
@@ -523,55 +551,6 @@ function makeDoughnut(id, items, total) {
               return ` ${fmt(c.raw)} 万円 (${pct}%)`;
             }
           }
-        }
-      }
-    }
-  });
-}
-
-function makeBar(id, items) {
-  const ctx = document.getElementById(id).getContext('2d');
-  return new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: items.map(i => {
-        const l = catLabel(i.category||i.name);
-        return l.length > 5 ? l.slice(0,5)+'…' : l;
-      }),
-      datasets: [{
-        data: items.map(i => i.value),
-        backgroundColor: items.map(i => catColor(i.category||i.name) + 'cc'),
-        borderRadius: 4,
-        borderSkipped: false,
-        barPercentage: 0.7,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#0d1520',
-          titleFont: { family: "'Space Mono', monospace", weight: 700, size: 11 },
-          bodyFont: { family: "'Space Mono', monospace", weight: 700, size: 11 },
-          borderColor: 'rgba(56,189,248,0.2)',
-          borderWidth: 1,
-          padding: 10,
-          cornerRadius: 6,
-          callbacks: { label: c => ` ${fmt(c.raw)} 万円` }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#374151', font: { family: "'Space Mono'", size: 9, weight: 700 } },
-          grid: { color: 'rgba(56,189,248,0.05)' },
-          border: { display: false }
-        },
-        y: {
-          ticks: { color: '#374151', font: { family: "'Space Mono'", size: 9, weight: 700 }, callback: v => fmt(v) },
-          grid: { color: 'rgba(56,189,248,0.05)' },
-          border: { display: false }
         }
       }
     }
@@ -625,7 +604,6 @@ function render(data) {
   const positiveCats = data.categories.filter(c => c.value > 0);
   const positiveTotal = positiveCats.reduce((s,c) => s+c.value, 0);
 
-  // Summary cards
   let catCards = '';
   positiveCats.forEach(c => {
     const col = catColor(c.name);
@@ -647,22 +625,18 @@ function render(data) {
       <span class="timestamp">${data.updated} 更新</span>
     </header>
 
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-title">ASSET ALLOCATION</div>
-        <div class="donut-wrap" id="donut-wrap">
+    <div class="donut-section">
+      <div class="donut-section-title">ASSET ALLOCATION</div>
+      <div class="donut-outer" id="donut-outer">
+        <div class="donut-canvas-wrap" id="donut-canvas-wrap">
           <canvas id="pie-main"></canvas>
           <div class="donut-center">
             <div class="donut-center-label">TOTAL</div>
             <div class="donut-center-value">${fmt(data.total)}</div>
             <div class="donut-center-unit">万円</div>
           </div>
-          <div class="callout-layer" id="callout-layer"></div>
         </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">BY CATEGORY</div>
-        <div class="bar-container"><canvas id="bar-main"></canvas></div>
+        <svg class="callout-svg" id="callout-svg"></svg>
       </div>
     </div>
 
@@ -677,23 +651,26 @@ function render(data) {
 
   setTimeout(() => {
     const ovItems = positiveCats.map(c => ({...c, category: c.name}));
-
     makeDoughnut('pie-main', ovItems, positiveTotal);
-    makeBar('bar-main', ovItems);
 
-    // Build callout labels after chart render
-    const wrap = document.getElementById('donut-wrap');
-    const size = wrap.offsetWidth;
-    buildCallouts('callout-layer', ovItems, positiveTotal, size);
+    function refreshCallouts() {
+      const outer = document.getElementById('donut-outer');
+      const wrap = document.getElementById('donut-canvas-wrap');
+      const svg = document.getElementById('callout-svg');
+      const outerW = outer.offsetWidth;
+      const outerH = outer.offsetHeight;
+      const canvasW = wrap.offsetWidth;
+      const canvasH = wrap.offsetHeight;
+      buildCallouts(svg, ovItems, positiveTotal, outerW, outerH, canvasW, canvasH);
+    }
 
-    // Rebuild callouts on resize
+    // Wait for chart to fully render
+    setTimeout(refreshCallouts, 120);
+
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        const newSize = wrap.offsetWidth;
-        buildCallouts('callout-layer', ovItems, positiveTotal, newSize);
-      }, 200);
+      resizeTimer = setTimeout(refreshCallouts, 200);
     });
   }, 80);
 }
