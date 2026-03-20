@@ -24,15 +24,6 @@
   --muted: #64748b;
   --mono: 'Space Mono', monospace;
   --sans: 'Noto Sans JP', sans-serif;
-
-  --c-gld:   #fbbf24;
-  --c-yen:   #f472b6;
-  --c-dol:   #818cf8;
-  --c-vt:    #38bdf8;
-  --c-bond:  #34d399;
-  --c-crypto:#fb923c;
-  --c-jp:    #f87171;
-  --c-other: #64748b;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,7 +37,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Grid background */
 body::before {
   content: '';
   position: fixed;
@@ -112,6 +102,115 @@ header {
   letter-spacing: 0.05em;
 }
 
+/* ── Charts Row ── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+@media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  animation: fadeUp 0.4s ease both;
+}
+
+.chart-title {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+/* ── Donut with center text ── */
+.donut-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 340px;
+  margin: 0 auto;
+}
+.donut-wrap canvas {
+  position: relative;
+  z-index: 2;
+}
+.donut-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 3;
+  pointer-events: none;
+}
+.donut-center-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.donut-center-value {
+  font-family: var(--mono);
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+.donut-center-unit {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ── Callout labels ── */
+.callout-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.callout {
+  position: absolute;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.callout-line {
+  position: absolute;
+  height: 1px;
+  top: 50%;
+}
+.callout-text {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.callout-value {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.callout-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ── Bar chart container ── */
+.bar-container { position: relative; height: 300px; }
+
 /* ── Section Title ── */
 .section-title {
   font-family: var(--mono);
@@ -141,12 +240,6 @@ header {
   transition: border-color 0.2s;
   animation: fadeUp 0.4s ease both;
 }
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-}
 .card:hover { border-color: rgba(56,189,248,0.3); }
 
 .card-label {
@@ -163,7 +256,6 @@ header {
   font-family: var(--mono);
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text);
   line-height: 1;
 }
 
@@ -173,107 +265,6 @@ header {
   font-weight: 700;
   color: var(--muted);
   margin-top: 6px;
-}
-
-/* ── Total Header Card ── */
-.total-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 28px 24px;
-  margin-bottom: 28px;
-  position: relative;
-  overflow: hidden;
-  animation: fadeUp 0.4s ease both;
-}
-.total-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--yellow), var(--pink));
-}
-
-.total-label {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.total-value {
-  font-family: var(--mono);
-  font-size: clamp(2rem, 6vw, 3.2rem);
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-.total-value span {
-  font-size: 0.9rem;
-  color: var(--muted);
-  margin-left: 6px;
-}
-
-.total-updated {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--muted);
-  margin-top: 10px;
-  letter-spacing: 0.05em;
-}
-
-/* ── Charts ── */
-.charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-@media (max-width: 640px) { .charts-grid { grid-template-columns: 1fr; } }
-
-.chart-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 20px;
-  animation: fadeUp 0.4s ease both;
-}
-
-.chart-title {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.chart-container { position: relative; height: 220px; }
-
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 14px;
-  margin-top: 14px;
-}
-.l-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-.l-dot {
-  width: 8px; height: 8px;
-  border-radius: 2px;
-  flex-shrink: 0;
 }
 
 /* ── Divider ── */
@@ -307,7 +298,6 @@ header {
 }
 
 .table-scroll { overflow-x: auto; }
-
 table { width: 100%; border-collapse: collapse; }
 
 th {
@@ -334,7 +324,7 @@ td {
   color: var(--text);
 }
 td.r { text-align: right; }
-td.name { font-family: var(--sans); font-size: 0.78rem; color: var(--text); }
+td.name { font-family: var(--sans); font-size: 0.78rem; }
 
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(56,189,248,0.03); }
@@ -365,7 +355,6 @@ tr:hover td { background: rgba(56,189,248,0.03); }
   transition: width 0.8s ease;
 }
 
-/* ── Loading ── */
 #loading {
   text-align: center;
   padding: 6rem;
@@ -385,7 +374,6 @@ tr:hover td { background: rgba(56,189,248,0.03); }
   color: var(--red);
 }
 
-/* ── Animations ── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -419,7 +407,6 @@ const CAT_CONFIG = {
   "サウス":{ color: "#2dd4bf", label: "サウス" },
 };
 const DEFAULT_COLOR = "#64748b";
-const CARD_CLASSES = ["yellow", "blue", "purple", "green", "red", "orange"];
 
 function catColor(c) { return (CAT_CONFIG[c]||{}).color||DEFAULT_COLOR; }
 function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
@@ -429,9 +416,81 @@ Chart.defaults.color = '#64748b';
 Chart.defaults.font.family = "'Space Mono', monospace";
 Chart.defaults.font.weight = 700;
 
-function makeDoughnut(id, items) {
+// ── Callout label builder ──
+function buildCallouts(containerId, items, total, canvasSize) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+
+  const cx = canvasSize / 2;
+  const cy = canvasSize / 2;
+  const outerR = canvasSize * 0.42;
+  const labelR = canvasSize * 0.62;
+
+  let cumAngle = -Math.PI / 2;
+
+  items.forEach((item, i) => {
+    const pct = total > 0 ? item.value / total : 0;
+    const sliceAngle = pct * Math.PI * 2;
+    const midAngle = cumAngle + sliceAngle / 2;
+    cumAngle += sliceAngle;
+
+    const col = catColor(item.category || item.name);
+
+    // Point on outer edge of donut
+    const edgeX = cx + Math.cos(midAngle) * outerR;
+    const edgeY = cy + Math.sin(midAngle) * outerR;
+
+    // Label position
+    const lx = cx + Math.cos(midAngle) * labelR;
+    const ly = cy + Math.sin(midAngle) * labelR;
+
+    const isRight = Math.cos(midAngle) >= 0;
+
+    const callout = document.createElement('div');
+    callout.className = 'callout';
+    callout.style.left = lx + 'px';
+    callout.style.top = ly + 'px';
+    callout.style.transform = isRight ? 'translate(0, -50%)' : 'translate(-100%, -50%)';
+
+    callout.innerHTML = `
+      <div class="callout-text" style="color:${col};${isRight ? 'padding-left:10px' : 'padding-right:10px;text-align:right'}">${catLabel(item.category||item.name)}</div>
+      <div class="callout-value" style="${isRight ? 'padding-left:10px' : 'padding-right:10px;text-align:right'}">${fmt(item.value)} <span style="font-size:0.55rem;color:var(--muted)">万円</span> <span style="font-size:0.58rem;color:${col}">${(pct*100).toFixed(1)}%</span></div>
+    `;
+
+    el.appendChild(callout);
+
+    // SVG line from edge to label
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('style', 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1');
+    svg.setAttribute('viewBox', `0 0 ${canvasSize} ${canvasSize}`);
+
+    const kx = lx + (isRight ? 4 : -4);
+    const ky = ly;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', edgeX);
+    line.setAttribute('y1', edgeY);
+    line.setAttribute('x2', kx);
+    line.setAttribute('y2', ky);
+    line.setAttribute('stroke', col);
+    line.setAttribute('stroke-width', '1');
+    line.setAttribute('opacity', '0.5');
+    svg.appendChild(line);
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', edgeX);
+    circle.setAttribute('cy', edgeY);
+    circle.setAttribute('r', '3');
+    circle.setAttribute('fill', col);
+    svg.appendChild(circle);
+
+    el.appendChild(svg);
+  });
+}
+
+function makeDoughnut(id, items, total) {
   const ctx = document.getElementById(id).getContext('2d');
-  const total = items.reduce((s,i)=>s+i.value,0);
   return new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -445,9 +504,9 @@ function makeDoughnut(id, items) {
       }]
     },
     options: {
-      cutout: '65%',
+      cutout: '62%',
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -500,9 +559,7 @@ function makeBar(id, items) {
           borderWidth: 1,
           padding: 10,
           cornerRadius: 6,
-          callbacks: {
-            label: c => ` ${fmt(c.raw)} 万円`
-          }
+          callbacks: { label: c => ` ${fmt(c.raw)} 万円` }
         }
       },
       scales: {
@@ -518,18 +575,6 @@ function makeBar(id, items) {
         }
       }
     }
-  });
-}
-
-function makeLegend(containerId, items, total) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  items.forEach(i => {
-    const pct = total > 0 ? ((i.value / total) * 100).toFixed(1) : 0;
-    el.innerHTML += `<span class="l-item">
-      <span class="l-dot" style="background:${catColor(i.category||i.name)}"></span>
-      ${catLabel(i.category||i.name)} ${pct}%
-    </span>`;
   });
 }
 
@@ -579,14 +624,12 @@ function render(data) {
 
   const positiveCats = data.categories.filter(c => c.value > 0);
   const positiveTotal = positiveCats.reduce((s,c) => s+c.value, 0);
-  const colorMap = { "#fbbf24":"yellow", "#f472b6":"pink", "#818cf8":"purple", "#38bdf8":"blue", "#34d399":"green", "#fb923c":"orange", "#f87171":"red" };
 
   // Summary cards
   let catCards = '';
-  positiveCats.forEach((c, idx) => {
+  positiveCats.forEach(c => {
     const col = catColor(c.name);
     const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
-    const cssClass = colorMap[col] || 'blue';
     catCards += `<div class="card">
       <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,${col},transparent)"></div>
       <div class="card-label">${catLabel(c.name)}</div>
@@ -601,29 +644,30 @@ function render(data) {
         <div class="logo-dot"></div>
         ZAIM_DASH
       </div>
-      <span class="timestamp" id="ts">${data.updated} 更新</span>
+      <span class="timestamp">${data.updated} 更新</span>
     </header>
-
-    <div class="total-card">
-      <div class="total-label">TOTAL NET ASSETS</div>
-      <div class="total-value">${fmt(data.total)}<span>万円</span></div>
-      <div class="total-updated">${data.updated} 更新</div>
-    </div>
-
-    <div class="section-title">— OVERVIEW</div>
-    <div class="summary-grid">${catCards}</div>
 
     <div class="charts-grid">
       <div class="chart-card">
         <div class="chart-title">ASSET ALLOCATION</div>
-        <div class="chart-container"><canvas id="pie-main"></canvas></div>
-        <div class="legend" id="leg-main"></div>
+        <div class="donut-wrap" id="donut-wrap">
+          <canvas id="pie-main"></canvas>
+          <div class="donut-center">
+            <div class="donut-center-label">TOTAL</div>
+            <div class="donut-center-value">${fmt(data.total)}</div>
+            <div class="donut-center-unit">万円</div>
+          </div>
+          <div class="callout-layer" id="callout-layer"></div>
+        </div>
       </div>
       <div class="chart-card">
         <div class="chart-title">BY CATEGORY</div>
-        <div class="chart-container"><canvas id="bar-main"></canvas></div>
+        <div class="bar-container"><canvas id="bar-main"></canvas></div>
       </div>
     </div>
+
+    <div class="section-title">— OVERVIEW</div>
+    <div class="summary-grid">${catCards}</div>
 
     <div class="divider"></div>
 
@@ -633,10 +677,25 @@ function render(data) {
 
   setTimeout(() => {
     const ovItems = positiveCats.map(c => ({...c, category: c.name}));
-    makeDoughnut('pie-main', ovItems);
+
+    makeDoughnut('pie-main', ovItems, positiveTotal);
     makeBar('bar-main', ovItems);
-    makeLegend('leg-main', ovItems, positiveTotal);
-  }, 50);
+
+    // Build callout labels after chart render
+    const wrap = document.getElementById('donut-wrap');
+    const size = wrap.offsetWidth;
+    buildCallouts('callout-layer', ovItems, positiveTotal, size);
+
+    // Rebuild callouts on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const newSize = wrap.offsetWidth;
+        buildCallouts('callout-layer', ovItems, positiveTotal, newSize);
+      }, 200);
+    });
+  }, 80);
 }
 
 init();
