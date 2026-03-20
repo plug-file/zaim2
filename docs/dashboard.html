@@ -557,7 +557,7 @@ function render(data) {
 
   setTimeout(() => {
     const ovItems = positiveCats.map(c => ({...c, category: c.name}));
-    makeDoughnut('pie-main', ovItems, positiveTotal);
+    makeDoughnut('pie-main', ovItems, data.total);
   }, 80);
 }
 
