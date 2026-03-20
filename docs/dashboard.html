@@ -510,11 +510,20 @@ function render(data) {
   const main = document.getElementById('main');
   main.style.display = 'block';
 
-  const positiveCats = data.categories.filter(c => c.value > 0);
-  const positiveTotal = positiveCats.reduce((s,c) => s+c.value, 0);
+  // accountsからカテゴリ集計を動的に計算（'-'は除外）
+  const catMap = {};
+  data.accounts.forEach(a => {
+    if (!a.category || a.category === '-') return;
+    if (!catMap[a.category]) catMap[a.category] = 0;
+    catMap[a.category] += a.value;
+  });
+  const computedCats = Object.entries(catMap)
+    .map(([name, value]) => ({ name, value }))
+    .filter(c => c.value > 0)
+    .sort((a, b) => b.value - a.value);
 
   let catCards = '';
-  positiveCats.forEach(c => {
+  computedCats.forEach(c => {
     const col = catColor(c.name);
     const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
     catCards += `<div class="card">
@@ -556,7 +565,7 @@ function render(data) {
   `;
 
   setTimeout(() => {
-    const ovItems = positiveCats.map(c => ({...c, category: c.name}));
+    const ovItems = computedCats.map(c => ({...c, category: c.name}));
     makeDoughnut('pie-main', ovItems, data.total);
   }, 80);
 }
