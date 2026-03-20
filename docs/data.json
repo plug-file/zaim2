@@ -5,7 +5,7 @@
     {
       "name": "住信 SBI ネット銀行 代...",
       "value": 248,
-      "category": "-"
+      "category": "円"
     },
     {
       "name": "楽天銀行 サンバ支店 普...",
@@ -25,12 +25,12 @@
     {
       "name": "楽天カード(Visa) XXXX...",
       "value": -15,
-      "category": "日本"
+      "category": "-"
     },
     {
       "name": "住信 SBI ネット銀行 定...",
       "value": 2000,
-      "category": "-"
+      "category": "円"
     },
     {
       "name": "三井住友カード Amazon...",
@@ -125,7 +125,7 @@
     },
     {
       "name": "円",
-      "value": 603
+      "value": 2851
     },
     {
       "name": "ドル",
@@ -145,7 +145,7 @@
     },
     {
       "name": "日本",
-      "value": -8
+      "value": 7
     }
   ]
 }
