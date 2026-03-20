@@ -269,9 +269,16 @@ td {
   color: var(--text);
 }
 td.r { text-align: right; }
-td.name { font-family: var(--sans); font-size: 0.78rem; }
+td.name { font-family: var(--sans); font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(56,189,248,0.03); }
+
+@media (max-width: 640px) {
+  td.name { max-width: 140px; font-size: 0.72rem; }
+  th { padding: 8px 10px; font-size: 0.55rem; }
+  td { padding: 10px 10px; font-size: 0.72rem; }
+  .bar-bg { min-width: 36px; }
+}
 
 .badge {
   display: inline-block;
@@ -449,13 +456,14 @@ function makeDoughnut(id, items, total) {
         backgroundColor: colors.map(c => c + 'cc'),
         borderColor: '#080c14',
         borderWidth: 3,
-        hoverOffset: 6,
+        hoverOffset: 0,
       }]
     },
     options: {
       cutout: '58%',
       responsive: true,
       maintainAspectRatio: true,
+      events: [],
       layout: {
         padding: {
           top: 40,
