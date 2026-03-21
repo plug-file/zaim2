@@ -96,7 +96,7 @@ header {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 20px 16px;
+  padding: 8px 16px;
   animation: fadeUp 0.4s ease both;
   display: flex;
   align-items: center;
@@ -311,9 +311,9 @@ tr:hover td { background: #f5f6f8; }
   .donut-wrap {
     max-width: none;
     width: 150vw;
-    aspect-ratio: auto;
-    height: 150vw;
-    margin: -20vw auto;
+    aspect-ratio: 1;
+    height: auto;
+    margin: -15vw auto;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -388,7 +388,7 @@ function makeDoughnut(id, items, total) {
       maintainAspectRatio: true,
       events: [],
       layout: {
-        padding: { top: 50, bottom: 50, left: 60, right: 60 }
+        padding: { top: 20, bottom: 20, left: 60, right: 60 }
       },
       plugins: {
         legend: { display: false },
