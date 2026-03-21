@@ -222,7 +222,8 @@ th {
   font-family: var(--mono);
   font-size: 0.68rem;
   font-weight: 700;
-  color: var(--muted);
+  color: #ffffff;
+  background: #374151;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 10px 20px;
@@ -372,7 +373,7 @@ function makeDoughnut(id, items, total) {
       maintainAspectRatio: true,
       events: [],
       layout: {
-        padding: { top: 60, bottom: 60, left: 80, right: 80 }
+        padding: 4
       },
       plugins: {
         legend: { display: false },
@@ -380,30 +381,22 @@ function makeDoughnut(id, items, total) {
         datalabels: {
           display: function(ctx) {
             const value = ctx.dataset.data[ctx.dataIndex];
-            return total > 0 && (value / total) > 0.01;
+            return total > 0 && (value / total) > 0.04;
           },
-          anchor: 'end',
-          align: 'end',
-          offset: 14,
-          clamp: true,
-          color: function(ctx) {
-            return colors[ctx.dataIndex];
-          },
-          textAlign: function(ctx) {
-            const meta = ctx.chart.getDatasetMeta(0);
-            const arc = meta.data[ctx.dataIndex];
-            const midAngle = (arc.startAngle + arc.endAngle) / 2;
-            return Math.cos(midAngle) >= 0 ? 'left' : 'right';
-          },
+          anchor: 'center',
+          align: 'center',
+          offset: 0,
+          color: '#ffffff',
+          textAlign: 'center',
           font: function(ctx) {
             const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
             const pct = total > 0 ? (value / total) : 0;
             const isMobile = window.innerWidth <= 768;
-            const baseSize = isMobile ? 12 : 15;
+            const baseSize = isMobile ? 11 : 14;
             return {
-              family: "'JetBrains Mono', monospace",
-              weight: 700,
-              size: pct > 0.2 ? baseSize + 2 : (pct > 0.08 ? baseSize : baseSize - 2)
+              family: "'Noto Sans JP', sans-serif",
+              weight: 900,
+              size: pct > 0.25 ? baseSize + 2 : (pct > 0.1 ? baseSize : baseSize - 2)
             };
           },
           formatter: function(value, ctx) {
@@ -411,42 +404,12 @@ function makeDoughnut(id, items, total) {
             if (!item) return '';
             const label = catLabel(item.category || item.name);
             const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-            return label + '\n' + fmtNoComma(value) + '万  ' + pct + '%';
+            return label + '\n' + fmtNoComma(value) + '万\n' + pct + '%';
           }
         }
       }
     },
-    plugins: [{
-      id: 'connectorLines',
-      afterDraw(chart) {
-        const meta = chart.getDatasetMeta(0);
-        const ctx2 = chart.ctx;
-        meta.data.forEach((arc, i) => {
-          const value = chart.data.datasets[0].data[i];
-          if (total > 0 && (value / total) <= 0.01) return;
-          const midAngle = (arc.startAngle + arc.endAngle) / 2;
-          const outerRadius = arc.outerRadius;
-          const startX = arc.x + Math.cos(midAngle) * outerRadius;
-          const startY = arc.y + Math.sin(midAngle) * outerRadius;
-          const endR = outerRadius + 10;
-          const endX = arc.x + Math.cos(midAngle) * endR;
-          const endY = arc.y + Math.sin(midAngle) * endR;
-          const col = colors[i];
-          ctx2.save();
-          ctx2.beginPath();
-          ctx2.moveTo(startX, startY);
-          ctx2.lineTo(endX, endY);
-          ctx2.strokeStyle = col + '66';
-          ctx2.lineWidth = 1.5;
-          ctx2.stroke();
-          ctx2.beginPath();
-          ctx2.arc(startX, startY, 3, 0, Math.PI * 2);
-          ctx2.fillStyle = col;
-          ctx2.fill();
-          ctx2.restore();
-        });
-      }
-    }]
+    plugins: []
   });
 }
 
