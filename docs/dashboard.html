@@ -166,7 +166,7 @@ header {
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 3px solid var(--border);
   border-radius: 8px;
   padding: 8px 14px 8px 18px;
   position: relative;
@@ -174,7 +174,7 @@ header {
   transition: border-color 0.2s;
   animation: fadeUp 0.4s ease both;
 }
-.card:hover { border-color: #93a3b8; }
+.card:hover { border-color: var(--card-color); }
 
 .card-top-bar {
   position: absolute;
@@ -488,7 +488,7 @@ function render(data) {
   positiveCats.forEach(c => {
     const col = catColor(c.name);
     const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
-    catCards += `<div class="card">
+    catCards += `<div class="card" style="--card-color:${col}">
       <div class="card-top-bar" style="background:${col}"></div>
       <div class="card-label">${catLabel(c.name)}</div>
       <div class="card-row">
