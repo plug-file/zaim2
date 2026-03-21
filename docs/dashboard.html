@@ -10,14 +10,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
 :root {
-  --bg: #080c14;
-  --surface: #0d1520;
-  --surface2: #111d2e;
-  --border: rgba(56,189,248,0.12);
-  --accent: #38bdf8;
-  --text: #e2e8f0;
-  --muted: #64748b;
-  --red: #f87171;
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --border: #e2e5ea;
+  --accent: #2563eb;
+  --text: #1a1d23;
+  --muted: #6b7280;
+  --red: #dc2626;
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Noto Sans JP', sans-serif;
 }
@@ -33,21 +32,8 @@ body {
   overflow-x: hidden;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
-
 .container {
   position: relative;
-  z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
   padding: 12px 16px 32px;
@@ -81,7 +67,7 @@ header {
   width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
+  box-shadow: 0 0 8px rgba(37,99,235,0.4);
   animation: pulse 2s infinite;
 }
 
@@ -98,7 +84,7 @@ header {
   letter-spacing: 0.05em;
 }
 
-/* ── Top Section: Vertical layout ── */
+/* ── Layout ── */
 .top-section {
   display: flex;
   flex-direction: column;
@@ -163,7 +149,7 @@ header {
   color: var(--muted);
 }
 
-/* ── Overview Cards ── */
+/* ── Cards ── */
 .overview-section {
   width: 100%;
 }
@@ -178,16 +164,13 @@ header {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 8px 14px;
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s;
   animation: fadeUp 0.4s ease both;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
-.card:hover { border-color: rgba(56,189,248,0.3); }
+.card:hover { border-color: #93a3b8; }
 
 .card-top-bar {
   position: absolute;
@@ -197,25 +180,32 @@ header {
 
 .card-label {
   font-family: var(--mono);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--muted);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
+
+.card-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
 .card-value {
   font-family: var(--mono);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   line-height: 1;
 }
-.card-sub {
+
+.card-pct {
   font-family: var(--mono);
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--muted);
-  margin-top: 5px;
 }
 
 /* ── Table ── */
@@ -243,7 +233,7 @@ th {
 th.r { text-align: right; }
 td {
   padding: 10px 20px;
-  border-bottom: 1px solid rgba(56,189,248,0.05);
+  border-bottom: 1px solid #f0f1f3;
   font-family: var(--mono);
   font-size: 0.92rem;
   font-weight: 700;
@@ -260,7 +250,7 @@ td.name {
   max-width: 320px;
 }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(56,189,248,0.03); }
+tr:hover td { background: #f5f6f8; }
 
 .badge {
   display: inline-block;
@@ -305,9 +295,6 @@ tr:hover td { background: rgba(56,189,248,0.03); }
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
-  .top-section {
-    flex-direction: column;
-  }
   .donut-section {
     padding: 12px 4px;
   }
@@ -322,10 +309,10 @@ tr:hover td { background: rgba(56,189,248,0.03); }
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
-  .card { padding: 10px 12px; }
-  .card-value { font-size: 1.2rem; }
-  .card-label { font-size: 0.75rem; }
-  .card-sub { font-size: 0.85rem; }
+  .card { padding: 7px 10px; }
+  .card-value { font-size: 1.1rem; }
+  .card-label { font-size: 0.7rem; }
+  .card-pct { font-size: 0.78rem; }
   td.name { max-width: 160px; font-size: 0.82rem; }
   th { padding: 8px 12px; font-size: 0.6rem; }
   td { padding: 8px 12px; font-size: 0.82rem; }
@@ -342,22 +329,22 @@ tr:hover td { background: rgba(56,189,248,0.03); }
 
 <script>
 const CAT_CONFIG = {
-  "GLD":  { color: "#fbbf24", label: "ゴールド" },
-  "円":   { color: "#f472b6", label: "円資産" },
-  "ドル": { color: "#818cf8", label: "ドル建て" },
-  "VT":   { color: "#38bdf8", label: "全世界株" },
-  "債券": { color: "#34d399", label: "債券" },
-  "暗号": { color: "#fb923c", label: "暗号資産" },
-  "日本": { color: "#f87171", label: "日本株" },
-  "サウス":{ color: "#2dd4bf", label: "サウス" },
+  "GLD":  { color: "#d97706", label: "ゴールド" },
+  "円":   { color: "#db2777", label: "円資産" },
+  "ドル": { color: "#6366f1", label: "ドル建て" },
+  "VT":   { color: "#2563eb", label: "全世界株" },
+  "債券": { color: "#059669", label: "債券" },
+  "暗号": { color: "#ea580c", label: "暗号資産" },
+  "日本": { color: "#dc2626", label: "日本株" },
+  "サウス":{ color: "#0d9488", label: "サウス" },
 };
-const DEFAULT_COLOR = "#64748b";
+const DEFAULT_COLOR = "#6b7280";
 
 function catColor(c) { return (CAT_CONFIG[c]||{}).color||DEFAULT_COLOR; }
 function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
 function fmtNoComma(v) { return String(Math.round(v)); }
 
-Chart.defaults.color = '#64748b';
+Chart.defaults.color = '#6b7280';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
 Chart.defaults.font.weight = 700;
 
@@ -373,8 +360,8 @@ function makeDoughnut(id, items, total) {
       labels: items.map(i => catLabel(i.category||i.name)),
       datasets: [{
         data: items.map(i => i.value),
-        backgroundColor: colors.map(c => c + 'cc'),
-        borderColor: '#080c14',
+        backgroundColor: colors,
+        borderColor: '#ffffff',
         borderWidth: 3,
         hoverOffset: 0,
       }]
@@ -470,8 +457,8 @@ function makeAllTable(items, total) {
     const col = cat ? catColor(cat) : DEFAULT_COLOR;
     const isNeg = i.value < 0;
     const catCell = cat
-      ? `<td><span class="badge" style="background:${col}22;color:${col}">${catLabel(cat)}</span></td>`
-      : `<td><span class="badge" style="background:rgba(100,116,139,0.15);color:#64748b">—</span></td>`;
+      ? `<td><span class="badge" style="background:${col}15;color:${col}">${catLabel(cat)}</span></td>`
+      : `<td><span class="badge" style="background:#f0f1f3;color:#6b7280">—</span></td>`;
     rows += `<tr>
       <td class="name">${i.name}</td>
       ${catCell}
@@ -512,8 +499,10 @@ function render(data) {
     catCards += `<div class="card">
       <div class="card-top-bar" style="background:${col}"></div>
       <div class="card-label">${catLabel(c.name)}</div>
-      <div class="card-value" style="color:${col}">${fmtNoComma(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:4px">万円</span></div>
-      <div class="card-sub">${pct}%</div>
+      <div class="card-row">
+        <div class="card-value" style="color:${col}">${fmtNoComma(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:3px">万円</span></div>
+        <div class="card-pct">${pct}%</div>
+      </div>
     </div>`;
   });
 
