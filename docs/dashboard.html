@@ -98,31 +98,32 @@ header {
   letter-spacing: 0.05em;
 }
 
-/* ── Top Section: Donut + Overview 50/50 ── */
+/* ── Top Section: Vertical layout ── */
 .top-section {
   display: flex;
+  flex-direction: column;
   gap: 14px;
   margin-bottom: 14px;
-  align-items: stretch;
 }
 
 .donut-section {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 16px;
+  padding: 20px 16px;
   animation: fadeUp 0.4s ease both;
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
 }
 
 .donut-wrap {
   position: relative;
   width: 100%;
-  max-width: 420px;
+  max-width: 520px;
   aspect-ratio: 1;
+  overflow: visible;
 }
 
 .donut-wrap canvas {
@@ -164,16 +165,13 @@ header {
 
 /* ── Overview Cards ── */
 .overview-section {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
-  height: 100%;
-  align-content: stretch;
 }
 
 .card {
@@ -314,7 +312,7 @@ tr:hover td { background: rgba(56,189,248,0.03); }
     padding: 12px 4px;
   }
   .donut-wrap {
-    max-width: 280px;
+    max-width: 100%;
     margin: 0 auto;
   }
   .donut-center-value { font-size: 1.8rem; }
@@ -323,7 +321,6 @@ tr:hover td { background: rgba(56,189,248,0.03); }
   .summary-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    height: auto;
   }
   .card { padding: 10px 12px; }
   .card-value { font-size: 1.2rem; }
@@ -388,7 +385,7 @@ function makeDoughnut(id, items, total) {
       maintainAspectRatio: true,
       events: [],
       layout: {
-        padding: 2
+        padding: { top: 60, bottom: 60, left: 80, right: 80 }
       },
       plugins: {
         legend: { display: false },
@@ -396,22 +393,30 @@ function makeDoughnut(id, items, total) {
         datalabels: {
           display: function(ctx) {
             const value = ctx.dataset.data[ctx.dataIndex];
-            return total > 0 && (value / total) > 0.04;
+            return total > 0 && (value / total) > 0.01;
           },
-          anchor: 'center',
-          align: 'center',
-          offset: 0,
-          color: '#fff',
-          textAlign: 'center',
+          anchor: 'end',
+          align: 'end',
+          offset: 14,
+          clamp: true,
+          color: function(ctx) {
+            return colors[ctx.dataIndex];
+          },
+          textAlign: function(ctx) {
+            const meta = ctx.chart.getDatasetMeta(0);
+            const arc = meta.data[ctx.dataIndex];
+            const midAngle = (arc.startAngle + arc.endAngle) / 2;
+            return Math.cos(midAngle) >= 0 ? 'left' : 'right';
+          },
           font: function(ctx) {
             const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
             const pct = total > 0 ? (value / total) : 0;
             const isMobile = window.innerWidth <= 768;
-            const baseSize = isMobile ? 9 : 11;
+            const baseSize = isMobile ? 12 : 15;
             return {
-              family: "'Noto Sans JP', sans-serif",
-              weight: 900,
-              size: pct > 0.25 ? baseSize + 1 : baseSize
+              family: "'JetBrains Mono', monospace",
+              weight: 700,
+              size: pct > 0.2 ? baseSize + 2 : (pct > 0.08 ? baseSize : baseSize - 2)
             };
           },
           formatter: function(value, ctx) {
@@ -419,12 +424,42 @@ function makeDoughnut(id, items, total) {
             if (!item) return '';
             const label = catLabel(item.category || item.name);
             const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-            return label + '\n' + fmtNoComma(value) + '万\n' + pct + '%';
+            return label + '\n' + fmtNoComma(value) + '万  ' + pct + '%';
           }
         }
       }
     },
-    plugins: []
+    plugins: [{
+      id: 'connectorLines',
+      afterDraw(chart) {
+        const meta = chart.getDatasetMeta(0);
+        const ctx2 = chart.ctx;
+        meta.data.forEach((arc, i) => {
+          const value = chart.data.datasets[0].data[i];
+          if (total > 0 && (value / total) <= 0.01) return;
+          const midAngle = (arc.startAngle + arc.endAngle) / 2;
+          const outerRadius = arc.outerRadius;
+          const startX = arc.x + Math.cos(midAngle) * outerRadius;
+          const startY = arc.y + Math.sin(midAngle) * outerRadius;
+          const endR = outerRadius + 10;
+          const endX = arc.x + Math.cos(midAngle) * endR;
+          const endY = arc.y + Math.sin(midAngle) * endR;
+          const col = colors[i];
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.moveTo(startX, startY);
+          ctx2.lineTo(endX, endY);
+          ctx2.strokeStyle = col + '66';
+          ctx2.lineWidth = 1.5;
+          ctx2.stroke();
+          ctx2.beginPath();
+          ctx2.arc(startX, startY, 3, 0, Math.PI * 2);
+          ctx2.fillStyle = col;
+          ctx2.fill();
+          ctx2.restore();
+        });
+      }
+    }]
   });
 }
 
