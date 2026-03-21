@@ -199,25 +199,25 @@ header {
 
 .card-label {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .card-value {
   font-family: var(--mono);
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
 }
 .card-sub {
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--muted);
-  margin-top: 3px;
+  margin-top: 5px;
 }
 
 /* ── Table ── */
@@ -326,9 +326,9 @@ tr:hover td { background: rgba(56,189,248,0.03); }
     height: auto;
   }
   .card { padding: 10px 12px; }
-  .card-value { font-size: 1rem; }
-  .card-label { font-size: 0.62rem; }
-  .card-sub { font-size: 0.72rem; }
+  .card-value { font-size: 1.2rem; }
+  .card-label { font-size: 0.75rem; }
+  .card-sub { font-size: 0.85rem; }
   td.name { max-width: 160px; font-size: 0.82rem; }
   th { padding: 8px 12px; font-size: 0.6rem; }
   td { padding: 8px 12px; font-size: 0.82rem; }
@@ -401,7 +401,7 @@ function makeDoughnut(id, items, total) {
           anchor: 'center',
           align: 'center',
           offset: 0,
-          color: '#fff',
+          color: '#4a5568',
           font: function(ctx) {
             const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
             const pct = total > 0 ? (value / total) : 0;
