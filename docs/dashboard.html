@@ -98,7 +98,7 @@ header {
   letter-spacing: 0.05em;
 }
 
-/* ── Top Section: Donut + Overview side by side on PC ── */
+/* ── Top Section: Donut + Overview 50/50 ── */
 .top-section {
   display: flex;
   gap: 14px;
@@ -112,7 +112,7 @@ header {
   border-radius: 8px;
   padding: 16px;
   animation: fadeUp 0.4s ease both;
-  flex: 0 0 auto;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,8 +120,9 @@ header {
 
 .donut-wrap {
   position: relative;
-  width: 320px;
-  height: 320px;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1;
 }
 
 .donut-wrap canvas {
@@ -148,7 +149,7 @@ header {
 }
 .donut-center-value {
   font-family: var(--mono);
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.2;
@@ -161,7 +162,7 @@ header {
   color: var(--muted);
 }
 
-/* ── Overview Cards (right side on PC) ── */
+/* ── Overview Cards ── */
 .overview-section {
   flex: 1;
   min-width: 0;
@@ -189,6 +190,12 @@ header {
   justify-content: center;
 }
 .card:hover { border-color: rgba(56,189,248,0.3); }
+
+.card-top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+}
 
 .card-label {
   font-family: var(--mono);
@@ -225,55 +232,48 @@ header {
 table { width: 100%; border-collapse: collapse; }
 th {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 9px 16px;
+  padding: 10px 20px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 th.r { text-align: right; }
 td {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-bottom: 1px solid rgba(56,189,248,0.05);
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 700;
   white-space: nowrap;
   color: var(--text);
 }
 td.r { text-align: right; }
-td.name { font-family: var(--sans); font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+td.name {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(56,189,248,0.03); }
 
 .badge {
   display: inline-block;
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 3px;
   letter-spacing: 0.08em;
 }
 .neg { color: var(--red); }
-
-.bar-bg {
-  background: rgba(56,189,248,0.08);
-  border-radius: 3px;
-  height: 4px;
-  width: 100%;
-  overflow: hidden;
-  min-width: 50px;
-}
-.bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.8s ease;
-}
 
 #loading {
   text-align: center;
@@ -314,8 +314,7 @@ tr:hover td { background: rgba(56,189,248,0.03); }
     padding: 12px 4px;
   }
   .donut-wrap {
-    width: 260px;
-    height: 260px;
+    max-width: 280px;
     margin: 0 auto;
   }
   .donut-center-value { font-size: 1.8rem; }
@@ -330,10 +329,9 @@ tr:hover td { background: rgba(56,189,248,0.03); }
   .card-value { font-size: 1rem; }
   .card-label { font-size: 0.62rem; }
   .card-sub { font-size: 0.72rem; }
-  td.name { max-width: 140px; font-size: 0.72rem; }
-  th { padding: 8px 10px; font-size: 0.55rem; }
-  td { padding: 7px 10px; font-size: 0.72rem; }
-  .bar-bg { min-width: 36px; }
+  td.name { max-width: 160px; font-size: 0.82rem; }
+  th { padding: 8px 12px; font-size: 0.6rem; }
+  td { padding: 8px 12px; font-size: 0.82rem; }
 }
 </style>
 </head>
@@ -360,7 +358,7 @@ const DEFAULT_COLOR = "#64748b";
 
 function catColor(c) { return (CAT_CONFIG[c]||{}).color||DEFAULT_COLOR; }
 function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
-function fmt(v) { return Math.round(v).toLocaleString('ja-JP'); }
+function fmtNoComma(v) { return String(Math.round(v)); }
 
 Chart.defaults.color = '#64748b';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
@@ -408,7 +406,7 @@ function makeDoughnut(id, items, total) {
             const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
             const pct = total > 0 ? (value / total) : 0;
             const isMobile = window.innerWidth <= 768;
-            const baseSize = isMobile ? 9 : 11;
+            const baseSize = isMobile ? 10 : 12;
             return {
               family: "'Noto Sans JP', sans-serif",
               weight: 900,
@@ -429,7 +427,6 @@ function makeDoughnut(id, items, total) {
 function makeAllTable(items, total) {
   let rows = '';
   items.filter(i => i.value !== 0).forEach(i => {
-    const pct = total > 0 ? ((Math.abs(i.value) / total) * 100).toFixed(1) : 0;
     const cat = i.category && i.category !== '-' ? i.category : '';
     const col = cat ? catColor(cat) : DEFAULT_COLOR;
     const isNeg = i.value < 0;
@@ -439,14 +436,12 @@ function makeAllTable(items, total) {
     rows += `<tr>
       <td class="name">${i.name}</td>
       ${catCell}
-      <td class="r ${isNeg?'neg':''}">${isNeg?'−':''}${fmt(Math.abs(i.value))}<span style="font-size:0.6rem;color:var(--muted);margin-left:3px">万円</span></td>
-      <td class="r" style="color:var(--muted)">${pct}%</td>
-      <td style="min-width:60px"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(parseFloat(pct)*1.5,100)}%;background:${col}"></div></div></td>
+      <td class="r ${isNeg?'neg':''}">${isNeg?'−':''}${fmtNoComma(Math.abs(i.value))}<span style="font-size:0.65rem;color:var(--muted);margin-left:3px">万円</span></td>
     </tr>`;
   });
   return `<div class="table-wrap">
     <div class="table-scroll"><table>
-      <thead><tr><th>NAME</th><th>CATEGORY</th><th class="r">AMOUNT</th><th class="r">RATIO</th><th></th></tr></thead>
+      <thead><tr><th>NAME</th><th>CATEGORY</th><th class="r">AMOUNT</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>
   </div>`;
@@ -476,9 +471,9 @@ function render(data) {
     const col = catColor(c.name);
     const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
     catCards += `<div class="card">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,${col},transparent)"></div>
+      <div class="card-top-bar" style="background:${col}"></div>
       <div class="card-label">${catLabel(c.name)}</div>
-      <div class="card-value" style="color:${col}">${fmt(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:4px">万円</span></div>
+      <div class="card-value" style="color:${col}">${fmtNoComma(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:4px">万円</span></div>
       <div class="card-sub">${pct}%</div>
     </div>`;
   });
@@ -498,7 +493,7 @@ function render(data) {
           <canvas id="pie-main"></canvas>
           <div class="donut-center">
             <div class="donut-center-label">TOTAL</div>
-            <div class="donut-center-value">${fmt(data.total)}</div>
+            <div class="donut-center-value">${fmtNoComma(data.total)}</div>
             <div class="donut-center-unit">万円</div>
           </div>
         </div>
