@@ -50,7 +50,7 @@ body::before {
   z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 20px 16px 48px;
+  padding: 12px 16px 32px;
 }
 
 /* ── Header ── */
@@ -58,11 +58,11 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0 28px;
+  padding: 10px 0 12px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 28px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
 }
 
 .logo {
@@ -98,38 +98,36 @@ header {
   letter-spacing: 0.05em;
 }
 
-/* ── Donut Section ── */
+/* ── Top Section: Donut + Overview side by side on PC ── */
+.top-section {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  align-items: stretch;
+}
+
 .donut-section {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 32px 20px 40px;
-  margin-bottom: 28px;
+  padding: 16px;
   animation: fadeUp 0.4s ease both;
-}
-
-.donut-section-title {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 32px;
-  text-align: center;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .donut-wrap {
   position: relative;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
+  width: 320px;
+  height: 320px;
 }
 
 .donut-wrap canvas {
   display: block;
   width: 100% !important;
-  height: auto !important;
+  height: 100% !important;
 }
 
 .donut-center {
@@ -142,7 +140,7 @@ header {
 }
 .donut-center-label {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.12em;
@@ -150,7 +148,7 @@ header {
 }
 .donut-center-value {
   font-family: var(--mono);
-  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.2;
@@ -158,70 +156,61 @@ header {
 }
 .donut-center-unit {
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--muted);
 }
 
-/* ── Section Title ── */
-.section-title {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
+/* ── Overview Cards (right side on PC) ── */
+.overview-section {
+  flex: 1;
+  min-width: 0;
 }
 
-/* ── Summary Cards ── */
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  height: 100%;
+  align-content: stretch;
 }
 
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 16px;
+  padding: 10px 14px;
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s;
   animation: fadeUp 0.4s ease both;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .card:hover { border-color: rgba(56,189,248,0.3); }
 
 .card-label {
   font-family: var(--mono);
-  font-size: 0.82rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 .card-value {
   font-family: var(--mono);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   line-height: 1;
 }
 .card-sub {
   font-family: var(--mono);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--muted);
-  margin-top: 6px;
-}
-
-/* ── Divider ── */
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 28px 0;
+  margin-top: 3px;
 }
 
 /* ── Table ── */
@@ -232,18 +221,6 @@ header {
   overflow: hidden;
   animation: fadeUp 0.4s ease both;
 }
-.table-header {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.table-title {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
 .table-scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th {
@@ -253,14 +230,14 @@ th {
   color: var(--muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 10px 16px;
+  padding: 9px 16px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 th.r { text-align: right; }
 td {
-  padding: 12px 16px;
+  padding: 8px 16px;
   border-bottom: 1px solid rgba(56,189,248,0.05);
   font-family: var(--mono);
   font-size: 0.78rem;
@@ -272,18 +249,6 @@ td.r { text-align: right; }
 td.name { font-family: var(--sans); font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(56,189,248,0.03); }
-
-@media (max-width: 640px) {
-  td.name { max-width: 140px; font-size: 0.72rem; }
-  th { padding: 8px 10px; font-size: 0.55rem; }
-  td { padding: 10px 10px; font-size: 0.72rem; }
-  .bar-bg { min-width: 36px; }
-  .donut-section { padding: 20px 4px 28px; }
-  .donut-wrap { max-width: 100%; }
-  .donut-center-value { font-size: clamp(2rem, 7vw, 3rem); }
-  .donut-center-label { font-size: 0.7rem; }
-  .donut-center-unit { font-size: 0.75rem; }
-}
 
 .badge {
   display: inline-block;
@@ -339,6 +304,37 @@ tr:hover td { background: rgba(56,189,248,0.03); }
 .card:nth-child(4) { animation-delay: 0.20s; }
 .card:nth-child(5) { animation-delay: 0.25s; }
 .card:nth-child(6) { animation-delay: 0.30s; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .top-section {
+    flex-direction: column;
+  }
+  .donut-section {
+    padding: 12px 4px;
+  }
+  .donut-wrap {
+    width: 260px;
+    height: 260px;
+    margin: 0 auto;
+  }
+  .donut-center-value { font-size: 1.8rem; }
+  .donut-center-label { font-size: 0.65rem; }
+  .donut-center-unit { font-size: 0.7rem; }
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    height: auto;
+  }
+  .card { padding: 10px 12px; }
+  .card-value { font-size: 1rem; }
+  .card-label { font-size: 0.62rem; }
+  .card-sub { font-size: 0.72rem; }
+  td.name { max-width: 140px; font-size: 0.72rem; }
+  th { padding: 8px 10px; font-size: 0.55rem; }
+  td { padding: 7px 10px; font-size: 0.72rem; }
+  .bar-bg { min-width: 36px; }
+}
 </style>
 </head>
 <body>
@@ -370,17 +366,11 @@ Chart.defaults.color = '#64748b';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
 Chart.defaults.font.weight = 700;
 
-// Register datalabels plugin
 Chart.register(ChartDataLabels);
 
 function makeDoughnut(id, items, total) {
   const ctx = document.getElementById(id).getContext('2d');
   const colors = items.map(i => catColor(i.category||i.name));
-  const isMobile = window.innerWidth <= 640;
-  const pad = isMobile ? { top: 28, bottom: 28, left: 48, right: 48 } : { top: 40, bottom: 40, left: 80, right: 80 };
-  const labelSize = isMobile ? 11 : 12;
-  const connectorLen = isMobile ? 8 : 12;
-  const labelOffset = isMobile ? 10 : 14;
 
   return new Chart(ctx, {
     type: 'doughnut',
@@ -395,87 +385,44 @@ function makeDoughnut(id, items, total) {
       }]
     },
     options: {
-      cutout: '58%',
+      cutout: '55%',
       responsive: true,
       maintainAspectRatio: true,
       events: [],
       layout: {
-        padding: pad
+        padding: 2
       },
       plugins: {
         legend: { display: false },
         tooltip: { enabled: false },
         datalabels: {
-          display: true,
-          anchor: 'end',
-          align: 'end',
-          offset: labelOffset,
-          clamp: true,
-          color: function(ctx) {
-            return colors[ctx.dataIndex];
+          display: function(ctx) {
+            const value = ctx.dataset.data[ctx.dataIndex];
+            return total > 0 && (value / total) > 0.04;
           },
-          font: {
-            family: "'JetBrains Mono', monospace",
-            weight: 700,
-            size: labelSize
+          anchor: 'center',
+          align: 'center',
+          offset: 0,
+          color: '#fff',
+          font: function(ctx) {
+            const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
+            const pct = total > 0 ? (value / total) : 0;
+            const isMobile = window.innerWidth <= 768;
+            const baseSize = isMobile ? 9 : 11;
+            return {
+              family: "'Noto Sans JP', sans-serif",
+              weight: 900,
+              size: pct > 0.25 ? baseSize + 2 : baseSize
+            };
           },
           formatter: function(value, ctx) {
-            const label = items[ctx.dataIndex] ? catLabel(items[ctx.dataIndex].category || items[ctx.dataIndex].name) : '';
-            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-            return label + '\n' + fmt(value) + '万\n' + pct + '%';
-          },
-          textAlign: function(ctx) {
-            // Get the midpoint angle of this slice
-            const meta = ctx.chart.getDatasetMeta(0);
-            const arc = meta.data[ctx.dataIndex];
-            const midAngle = (arc.startAngle + arc.endAngle) / 2;
-            return Math.cos(midAngle) >= 0 ? 'left' : 'right';
+            const item = items[ctx.dataIndex];
+            return item ? catLabel(item.category || item.name) : '';
           }
         }
       }
     },
-    plugins: [{
-      // Draw connector lines
-      id: 'connectorLines',
-      afterDraw(chart) {
-        const meta = chart.getDatasetMeta(0);
-        const ctx = chart.ctx;
-
-        meta.data.forEach((arc, i) => {
-          const midAngle = (arc.startAngle + arc.endAngle) / 2;
-          const outerRadius = arc.outerRadius;
-          const centerX = arc.x;
-          const centerY = arc.y;
-
-          // Start point: edge of donut
-          const startX = centerX + Math.cos(midAngle) * outerRadius;
-          const startY = centerY + Math.sin(midAngle) * outerRadius;
-
-          // End point: slightly further out
-          const endR = outerRadius + connectorLen;
-          const endX = centerX + Math.cos(midAngle) * endR;
-          const endY = centerY + Math.sin(midAngle) * endR;
-
-          const col = colors[i];
-
-          ctx.save();
-          // Line
-          ctx.beginPath();
-          ctx.moveTo(startX, startY);
-          ctx.lineTo(endX, endY);
-          ctx.strokeStyle = col + '77';
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-
-          // Dot
-          ctx.beginPath();
-          ctx.arc(startX, startY, 3, 0, Math.PI * 2);
-          ctx.fillStyle = col;
-          ctx.fill();
-          ctx.restore();
-        });
-      }
-    }]
+    plugins: []
   });
 }
 
@@ -498,7 +445,6 @@ function makeAllTable(items, total) {
     </tr>`;
   });
   return `<div class="table-wrap">
-    <div class="table-header"><div class="table-title">ALL ACCOUNTS</div></div>
     <div class="table-scroll"><table>
       <thead><tr><th>NAME</th><th>CATEGORY</th><th class="r">AMOUNT</th><th class="r">RATIO</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
@@ -532,7 +478,7 @@ function render(data) {
     catCards += `<div class="card">
       <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,${col},transparent)"></div>
       <div class="card-label">${catLabel(c.name)}</div>
-      <div class="card-value" style="color:${col}">${fmt(c.value)}<span style="font-size:0.65rem;color:var(--muted);margin-left:4px">万円</span></div>
+      <div class="card-value" style="color:${col}">${fmt(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:4px">万円</span></div>
       <div class="card-sub">${pct}%</div>
     </div>`;
   });
@@ -546,24 +492,22 @@ function render(data) {
       <span class="timestamp">${data.updated} 更新</span>
     </header>
 
-    <div class="donut-section">
-      <div class="donut-section-title">ASSET ALLOCATION</div>
-      <div class="donut-wrap">
-        <canvas id="pie-main"></canvas>
-        <div class="donut-center">
-          <div class="donut-center-label">TOTAL</div>
-          <div class="donut-center-value">${fmt(data.total)}</div>
-          <div class="donut-center-unit">万円</div>
+    <div class="top-section">
+      <div class="donut-section">
+        <div class="donut-wrap">
+          <canvas id="pie-main"></canvas>
+          <div class="donut-center">
+            <div class="donut-center-label">TOTAL</div>
+            <div class="donut-center-value">${fmt(data.total)}</div>
+            <div class="donut-center-unit">万円</div>
+          </div>
         </div>
+      </div>
+      <div class="overview-section">
+        <div class="summary-grid">${catCards}</div>
       </div>
     </div>
 
-    <div class="section-title">— OVERVIEW</div>
-    <div class="summary-grid">${catCards}</div>
-
-    <div class="divider"></div>
-
-    <div class="section-title">— ALL ACCOUNTS</div>
     ${makeAllTable(data.accounts, data.total)}
   `;
 
