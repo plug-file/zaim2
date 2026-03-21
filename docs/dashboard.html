@@ -164,7 +164,7 @@ header {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 8px 14px;
+  padding: 8px 14px 8px 18px;
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s;
@@ -174,8 +174,9 @@ header {
 
 .card-top-bar {
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 6px;
+  top: 0; left: 0; bottom: 0;
+  width: 6px;
+  border-radius: 8px 0 0 8px;
 }
 
 .card-label {
@@ -310,7 +311,7 @@ tr:hover td { background: #f5f6f8; }
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
-  .card { padding: 7px 10px; }
+  .card { padding: 7px 10px 7px 16px; }
   .card-value { font-size: 1.1rem; }
   .card-label { font-size: 0.7rem; }
   .card-pct { font-size: 0.78rem; }
@@ -368,7 +369,7 @@ function makeDoughnut(id, items, total) {
       }]
     },
     options: {
-      cutout: '55%',
+      cutout: '42%',
       responsive: true,
       maintainAspectRatio: true,
       events: [],
