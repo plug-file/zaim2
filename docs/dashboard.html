@@ -33,7 +33,7 @@ body {
 
 .container {
   position: relative;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 12px 16px 32px;
 }
@@ -106,7 +106,7 @@ header {
 .donut-wrap {
   position: relative;
   width: 100%;
-  max-width: 780px;
+  max-width: 520px;
   aspect-ratio: 1;
   overflow: visible;
 }
@@ -127,7 +127,7 @@ header {
 }
 .donut-center-label {
   font-family: var(--font);
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.12em;
@@ -135,7 +135,7 @@ header {
 }
 .donut-center-value {
   font-family: var(--font);
-  font-size: 3rem;
+  font-size: 2.4rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.2;
@@ -143,7 +143,7 @@ header {
 }
 .donut-center-unit {
   font-family: var(--font);
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--muted);
 }
@@ -305,11 +305,15 @@ tr:hover td { background: #f5f6f8; }
     background: transparent;
     margin-left: -8px;
     margin-right: -8px;
+    overflow: hidden;
   }
   .donut-wrap {
-    max-width: 100%;
-    width: 100%;
+    max-width: none;
+    width: 140vw;
     margin: 0 auto;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .donut-center-value { font-size: 1.8rem; }
   .donut-center-label { font-size: 0.65rem; }
