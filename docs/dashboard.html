@@ -401,21 +401,25 @@ function makeDoughnut(id, items, total) {
           anchor: 'center',
           align: 'center',
           offset: 0,
-          color: '#4a5568',
+          color: '#fff',
+          textAlign: 'center',
           font: function(ctx) {
             const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
             const pct = total > 0 ? (value / total) : 0;
             const isMobile = window.innerWidth <= 768;
-            const baseSize = isMobile ? 10 : 12;
+            const baseSize = isMobile ? 9 : 11;
             return {
               family: "'Noto Sans JP', sans-serif",
               weight: 900,
-              size: pct > 0.25 ? baseSize + 2 : baseSize
+              size: pct > 0.25 ? baseSize + 1 : baseSize
             };
           },
           formatter: function(value, ctx) {
             const item = items[ctx.dataIndex];
-            return item ? catLabel(item.category || item.name) : '';
+            if (!item) return '';
+            const label = catLabel(item.category || item.name);
+            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+            return label + '\n' + fmtNoComma(value) + '万\n' + pct + '%';
           }
         }
       }
