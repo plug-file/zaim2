@@ -318,10 +318,10 @@ tr:hover td { background: #f5f6f8; }
   }
   .donut-wrap {
     max-width: none;
-    width: 180vw;
+    width: 216vw;
     aspect-ratio: 1;
     height: auto;
-    margin: -25vw auto;
+    margin: -38vw auto;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -400,7 +400,9 @@ function makeDoughnut(id, items, total) {
       maintainAspectRatio: true,
       events: [],
       layout: {
-        padding: { top: 20, bottom: 20, left: 60, right: 60 }
+        padding: window.innerWidth <= 768
+          ? { top: 10, bottom: 10, left: 30, right: 30 }
+          : { top: 20, bottom: 20, left: 60, right: 60 }
       },
       plugins: {
         legend: { display: false },
