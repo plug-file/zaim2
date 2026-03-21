@@ -167,8 +167,9 @@ header {
 .card {
   background: var(--surface);
   border: 3px solid var(--border);
+  border-left: 6px solid var(--card-color);
   border-radius: 8px;
-  padding: 8px 14px 8px 18px;
+  padding: 8px 14px 8px 14px;
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s, background 0.2s;
@@ -178,13 +179,6 @@ header {
 }
 .card:hover { border-color: var(--card-color); }
 .card.active { border-color: var(--card-color); background: color-mix(in srgb, var(--card-color) 8%, white); }
-
-.card-top-bar {
-  position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 6px;
-  border-radius: 8px 0 0 8px;
-}
 
 .card-label {
   font-family: var(--font);
@@ -492,7 +486,6 @@ function render(data) {
     const col = catColor(c.name);
     const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
     catCards += `<div class="card" style="--card-color:${col}" data-cat="${c.name}">
-      <div class="card-top-bar" style="background:${col}"></div>
       <div class="card-label">${catLabel(c.name)}</div>
       <div class="card-row">
         <div class="card-value" style="color:${col}">${fmtNoComma(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:3px">万円</span></div>
