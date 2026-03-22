@@ -1,6 +1,5 @@
-const CACHE_NAME = 'zaim-dash-v1';
+const CACHE_NAME = 'zaim-dash-v2';
 const STATIC_ASSETS = [
-  './dashboard.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -28,8 +27,8 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // data.json は常にネットワーク優先（最新データを取得）
-  if (url.pathname.endsWith('data.json')) {
+  // data.json と dashboard.html はネットワーク優先（最新を取得、失敗時はキャッシュ）
+  if (url.pathname.endsWith('data.json') || url.pathname.endsWith('dashboard.html') || url.pathname.endsWith('/')) {
     event.respondWith(
       fetch(event.request)
         .then(res => {
@@ -42,7 +41,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // その他はキャッシュ優先
+  // その他（アイコン、フォント、ライブラリ）はキャッシュ優先
   event.respondWith(
     caches.match(event.request).then(cached => cached || fetch(event.request))
   );
