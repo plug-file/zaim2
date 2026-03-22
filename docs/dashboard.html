@@ -379,7 +379,9 @@ function makeDoughnut(id, items, total) {
   const ctx = document.getElementById(id).getContext('2d');
   const colors = items.map(i => catColor(i.category||i.name));
 
-  return new Chart(ctx, {
+  let hoveredIndex = -1;
+
+  const chart = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels: items.map(i => catLabel(i.category||i.name)),
@@ -389,17 +391,47 @@ function makeDoughnut(id, items, total) {
         borderColor: 'transparent',
         borderWidth: 2,
         hoverOffset: 0,
+        offset: items.map(() => 0),
       }]
     },
     options: {
       cutout: '42%',
       responsive: true,
       maintainAspectRatio: true,
-      events: [],
+      events: ['click', 'mousemove', 'mouseout'],
       layout: {
         padding: window.innerWidth <= 768
           ? { top: 10, bottom: 10, left: 30, right: 30 }
           : { top: 20, bottom: 20, left: 60, right: 60 }
+      },
+      onHover: function(event, elements) {
+        const canvas = chart.canvas;
+        if (elements.length > 0) {
+          canvas.style.cursor = 'pointer';
+          const idx = elements[0].index;
+          if (hoveredIndex !== idx) {
+            hoveredIndex = idx;
+            const offsets = items.map((_, i) => i === idx ? 12 : 0);
+            chart.data.datasets[0].offset = offsets;
+            chart.update('none');
+          }
+        } else {
+          canvas.style.cursor = 'default';
+          if (hoveredIndex !== -1) {
+            hoveredIndex = -1;
+            chart.data.datasets[0].offset = items.map(() => 0);
+            chart.update('none');
+          }
+        }
+      },
+      onClick: function(event, elements) {
+        if (elements.length > 0) {
+          const idx = elements[0].index;
+          const cat = items[idx].category || items[idx].name;
+          if (typeof window.filterByCategory === 'function') {
+            window.filterByCategory(cat);
+          }
+        }
       },
       plugins: {
         legend: { display: false },
@@ -417,12 +449,15 @@ function makeDoughnut(id, items, total) {
           font: function(ctx) {
             const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
             const pct = total > 0 ? (value / total) : 0;
+            const isHovered = ctx.dataIndex === hoveredIndex;
             const isMobile = window.innerWidth <= 768;
             const baseSize = isMobile ? 13 : 18;
+            let size = pct > 0.25 ? baseSize + 3 : (pct > 0.1 ? baseSize : baseSize - 3);
+            if (isHovered) size += 4;
             return {
               family: "'Noto Sans JP', sans-serif",
               weight: 900,
-              size: pct > 0.25 ? baseSize + 3 : (pct > 0.1 ? baseSize : baseSize - 3)
+              size: size
             };
           },
           formatter: function(value, ctx) {
@@ -437,7 +472,8 @@ function makeDoughnut(id, items, total) {
     },
     plugins: []
   });
-}
+
+  return chart;
 
 function makeAllTable(items, total) {
   let rows = '';
@@ -527,26 +563,30 @@ function render(data) {
     makeDoughnut('pie-main', ovItems, data.total);
   }, 80);
 
-  // Card click → filter table
+  // Shared filter logic
   let activeFilter = null;
+  window.filterByCategory = function(cat) {
+    if (activeFilter === cat) {
+      // Deselect
+      activeFilter = null;
+      document.querySelectorAll('.card[data-cat]').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('table tbody tr').forEach(tr => tr.style.display = '');
+    } else {
+      // Select
+      activeFilter = cat;
+      document.querySelectorAll('.card[data-cat]').forEach(c => {
+        c.classList.toggle('active', c.dataset.cat === cat);
+      });
+      document.querySelectorAll('table tbody tr').forEach(tr => {
+        tr.style.display = tr.dataset.category === cat ? '' : 'none';
+      });
+    }
+  };
+
   setTimeout(() => {
     document.querySelectorAll('.card[data-cat]').forEach(card => {
       card.addEventListener('click', () => {
-        const cat = card.dataset.cat;
-        if (activeFilter === cat) {
-          // Deselect
-          activeFilter = null;
-          card.classList.remove('active');
-          document.querySelectorAll('table tbody tr').forEach(tr => tr.style.display = '');
-        } else {
-          // Select
-          activeFilter = cat;
-          document.querySelectorAll('.card[data-cat]').forEach(c => c.classList.remove('active'));
-          card.classList.add('active');
-          document.querySelectorAll('table tbody tr').forEach(tr => {
-            tr.style.display = tr.dataset.category === cat ? '' : 'none';
-          });
-        }
+        window.filterByCategory(card.dataset.cat);
       });
     });
   }, 100);
