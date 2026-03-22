@@ -1,500 +1,623 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>資産ダッシュボード</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
-<style>
-:root {
-  --bg: #f8f9fb;
-  --surface: #ffffff;
-  --border: #e2e5ea;
-  --accent: #2563eb;
-  --text: #1a1d23;
-  --muted: #6b7280;
-  --red: #dc2626;
-  --font: 'Noto Sans JP', sans-serif;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZAIM-DASH</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ZaimDash">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8f9fb;
+      --surface: #ffffff;
+      --border: #e2e5ea;
+      --accent: #2563eb;
+      --text: #1a1d23;
+      --muted: #6b7280;
+      --red: #dc2626;
+      --font: 'Noto Sans JP', sans-serif;
+    }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  font-weight: 700;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-weight: 700;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-.container {
-  position: relative;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 12px 16px 32px;
-  overflow-x: hidden;
-}
+    .container {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 16px 32px;
+      overflow-x: hidden;
+    }
 
-/* ── Header ── */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0 12px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-.logo {
-  font-family: var(--font);
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    .logo {
+      font-family: var(--font);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-.logo-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px rgba(37,99,235,0.4);
-  animation: pulse 2s infinite;
-}
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+      animation: pulse 2s infinite;
+    }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
+    @keyframes pulse {
 
-.timestamp {
-  font-family: var(--font);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-}
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
 
-/* ── Layout ── */
-.top-section {
-  display: flex;
-  flex-direction: row;
-  gap: 14px;
-  margin-bottom: 14px;
-  align-items: center;
-}
+      50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+      }
+    }
 
-.donut-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 16px;
-  animation: fadeUp 0.4s ease both;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
-  flex: 1;
-  min-width: 0;
-}
+    .timestamp {
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
 
-.donut-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 624px;
-  aspect-ratio: 1;
-  overflow: visible;
-}
+    /* ── Layout ── */
+    .top-section {
+      display: flex;
+      flex-direction: row;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
 
-.donut-wrap canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
+    .donut-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      animation: fadeUp 0.4s ease both;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      flex: 1;
+      min-width: 0;
+    }
 
-.donut-center {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  pointer-events: none;
-  z-index: 3;
-}
-.donut-center-label {
-  font-family: var(--font);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.donut-center-value {
-  font-family: var(--font);
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.2;
-  margin-top: 2px;
-}
-.donut-center-unit {
-  font-family: var(--font);
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--muted);
-}
+    .donut-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 624px;
+      aspect-ratio: 1;
+      overflow: visible;
+    }
 
-/* ── Cards ── */
-.overview-section {
-  flex: 0 0 auto;
-  width: 220px;
-}
+    .donut-wrap canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
 
-.summary-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+    .donut-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      z-index: 3;
+    }
 
-.card {
-  background: var(--surface);
-  border: 6px solid transparent;
-  border-left: 6px solid var(--card-color);
-  border-radius: 8px;
-  padding: 8px 14px 8px 14px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.2s, background 0.2s;
-  animation: fadeUp 0.4s ease both;
-  cursor: pointer;
-  user-select: none;
-}
-.card:hover { border-color: var(--card-color); }
-.card.active { border-color: var(--card-color); background: color-mix(in srgb, var(--card-color) 8%, white); }
+    .donut-center-label {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
 
-.card-label {
-  font-family: var(--font);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
+    .donut-center-value {
+      font-family: var(--font);
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-top: 2px;
+    }
 
-.card-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
+    .donut-center-unit {
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
 
-.card-value {
-  font-family: var(--font);
-  font-size: 1.4rem;
-  font-weight: 700;
-  line-height: 1;
-}
+    /* ── Cards ── */
+    .overview-section {
+      flex: 0 0 auto;
+      width: 220px;
+    }
 
-.card-pct {
-  font-family: var(--font);
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--muted);
-}
+    .summary-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-/* ── Table ── */
-.table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  animation: fadeUp 0.4s ease both;
-}
-.table-scroll { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; }
-th {
-  font-family: var(--font);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #ffffff;
-  background: #374151;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 10px 20px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-th.r { text-align: right; }
-td {
-  padding: 10px 20px;
-  border-bottom: 1px solid #f0f1f3;
-  font-family: var(--font);
-  font-size: 0.92rem;
-  font-weight: 700;
-  white-space: nowrap;
-  color: var(--text);
-}
-td.r { text-align: right; }
-td.name {
-  font-family: var(--font);
-  font-size: 0.92rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 320px;
-}
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: #f5f6f8; }
+    .card {
+      background: var(--surface);
+      border: 6px solid transparent;
+      border-left: 6px solid var(--card-color);
+      border-radius: 8px;
+      padding: 8px 14px 8px 14px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+      animation: fadeUp 0.4s ease both;
+      cursor: pointer;
+      user-select: none;
+    }
 
-.badge {
-  display: inline-block;
-  font-family: var(--font);
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 3px;
-  letter-spacing: 0.08em;
-}
-.neg { color: var(--red); }
+    .card:hover {
+      border-color: var(--card-color);
+    }
 
-#loading {
-  text-align: center;
-  padding: 6rem;
-  font-family: var(--font);
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 0.15em;
-}
-#error {
-  display: none;
-  text-align: center;
-  padding: 4rem;
-  font-family: var(--font);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--red);
-}
+    .card.active {
+      border-color: var(--card-color);
+      background: color-mix(in srgb, var(--card-color) 8%, white);
+    }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.card:nth-child(1) { animation-delay: 0.05s; }
-.card:nth-child(2) { animation-delay: 0.10s; }
-.card:nth-child(3) { animation-delay: 0.15s; }
-.card:nth-child(4) { animation-delay: 0.20s; }
-.card:nth-child(5) { animation-delay: 0.25s; }
-.card:nth-child(6) { animation-delay: 0.30s; }
+    .card-label {
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
 
-/* ── Mobile ── */
-@media (max-width: 768px) {
-  .container {
-    padding: 8px 8px 24px;
-  }
-  .top-section {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .donut-section {
-    padding: 0;
-    border: none;
-    background: transparent;
-    margin-left: -8px;
-    margin-right: -8px;
-    overflow: visible;
-  }
-  .donut-wrap {
-    max-width: none;
-    width: 216vw;
-    aspect-ratio: 1;
-    height: auto;
-    margin: -5vw auto;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .donut-center-value { font-size: 2.2rem; }
-  .donut-center-label { font-size: 0.65rem; }
-  .donut-center-unit { font-size: 0.7rem; }
-  .overview-section {
-    width: 100%;
-  }
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  .card { padding: 7px 10px 7px 16px; }
-  .card-value { font-size: 1.1rem; }
-  .card-label { font-size: 0.7rem; }
-  .card-pct { font-size: 0.78rem; }
-  td.name { max-width: 160px; font-size: 0.82rem; }
-  th { padding: 8px 12px; font-size: 0.6rem; }
-  td { padding: 8px 12px; font-size: 0.82rem; }
-}
-</style>
+    .card-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .card-value {
+      font-family: var(--font);
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .card-pct {
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      font-family: var(--font);
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: #374151;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th.r {
+      text-align: right;
+    }
+
+    td {
+      padding: 10px 20px;
+      border-bottom: 1px solid #f0f1f3;
+      font-family: var(--font);
+      font-size: 0.92rem;
+      font-weight: 700;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    td.r {
+      text-align: right;
+    }
+
+    td.name {
+      font-family: var(--font);
+      font-size: 0.92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 320px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #f5f6f8;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 3px;
+      letter-spacing: 0.08em;
+    }
+
+    .neg {
+      color: var(--red);
+    }
+
+    #loading {
+      text-align: center;
+      padding: 6rem;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+    }
+
+    #error {
+      display: none;
+      text-align: center;
+      padding: 4rem;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--red);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .card:nth-child(2) {
+      animation-delay: 0.10s;
+    }
+
+    .card:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .card:nth-child(4) {
+      animation-delay: 0.20s;
+    }
+
+    .card:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .card:nth-child(6) {
+      animation-delay: 0.30s;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .container {
+        padding: 8px 8px 24px;
+      }
+
+      .top-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .donut-section {
+        padding: 0;
+        border: none;
+        background: transparent;
+        margin-left: -8px;
+        margin-right: -8px;
+        overflow: visible;
+      }
+
+      .donut-wrap {
+        max-width: none;
+        width: 216vw;
+        aspect-ratio: 1;
+        height: auto;
+        margin: -5vw auto;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .donut-center-value {
+        font-size: 2.2rem;
+      }
+
+      .donut-center-label {
+        font-size: 0.65rem;
+      }
+
+      .donut-center-unit {
+        font-size: 0.7rem;
+      }
+
+      .overview-section {
+        width: 100%;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .card {
+        padding: 7px 10px 7px 16px;
+      }
+
+      .card-value {
+        font-size: 1.1rem;
+      }
+
+      .card-label {
+        font-size: 0.7rem;
+      }
+
+      .card-pct {
+        font-size: 0.78rem;
+      }
+
+      td.name {
+        max-width: 160px;
+        font-size: 0.82rem;
+      }
+
+      th {
+        padding: 8px 12px;
+        font-size: 0.6rem;
+      }
+
+      td {
+        padding: 8px 12px;
+        font-size: 0.82rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container">
-  <div id="loading">LOADING...</div>
-  <div id="error">データの読み込みに失敗しました。<br>data.json が同じディレクトリにあるか確認してください。</div>
-  <div id="main" style="display:none"></div>
-</div>
+  <div class="container">
+    <div id="loading">LOADING...</div>
+    <div id="error">データの読み込みに失敗しました。<br>data.json が同じディレクトリにあるか確認してください。</div>
+    <div id="main" style="display:none"></div>
+  </div>
 
-<script>
-const CAT_CONFIG = {
-  "GLD":  { color: "#d97706", label: "ゴールド" },
-  "円":   { color: "#db2777", label: "円資産" },
-  "ドル": { color: "#6366f1", label: "ドル資産" },
-  "VT":   { color: "#2563eb", label: "全世界株" },
-  "債券": { color: "#059669", label: "債券" },
-  "暗号": { color: "#ea580c", label: "暗号資産" },
-  "日本": { color: "#dc2626", label: "日本株" },
-  "サウス":{ color: "#0d9488", label: "サウス" },
-};
-const DEFAULT_COLOR = "#6b7280";
+  <script>
+    const CAT_CONFIG = {
+      "GLD": { color: "#d97706", label: "ゴールド" },
+      "円": { color: "#db2777", label: "円資産" },
+      "ドル": { color: "#6366f1", label: "ドル資産" },
+      "VT": { color: "#2563eb", label: "全世界株" },
+      "債券": { color: "#059669", label: "債券" },
+      "暗号": { color: "#ea580c", label: "暗号資産" },
+      "日本": { color: "#dc2626", label: "日本株" },
+      "サウス": { color: "#0d9488", label: "サウス" },
+    };
+    const DEFAULT_COLOR = "#6b7280";
 
-function catColor(c) { return (CAT_CONFIG[c]||{}).color||DEFAULT_COLOR; }
-function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
-function fmtNoComma(v) { return String(Math.round(v)); }
+    function catColor(c) { return (CAT_CONFIG[c] || {}).color || DEFAULT_COLOR; }
+    function catLabel(c) { return (CAT_CONFIG[c] || {}).label || c; }
+    function fmtNoComma(v) { return String(Math.round(v)); }
 
-Chart.defaults.color = '#6b7280';
-Chart.defaults.font.family = "'Noto Sans JP', sans-serif";
-Chart.defaults.font.weight = 700;
+    Chart.defaults.color = '#6b7280';
+    Chart.defaults.font.family = "'Noto Sans JP', sans-serif";
+    Chart.defaults.font.weight = 700;
 
-Chart.register(ChartDataLabels);
+    Chart.register(ChartDataLabels);
 
-function makeDoughnut(id, items, total) {
-  const ctx = document.getElementById(id).getContext('2d');
-  const colors = items.map(i => catColor(i.category||i.name));
+    function makeDoughnut(id, items, total) {
+      const ctx = document.getElementById(id).getContext('2d');
+      const colors = items.map(i => catColor(i.category || i.name));
 
-  return new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: items.map(i => catLabel(i.category||i.name)),
-      datasets: [{
-        data: items.map(i => i.value),
-        backgroundColor: colors,
-        borderColor: 'transparent',
-        borderWidth: 2,
-        hoverOffset: 0,
-      }]
-    },
-    options: {
-      cutout: '42%',
-      responsive: true,
-      maintainAspectRatio: true,
-      events: [],
-      layout: {
-        padding: window.innerWidth <= 768
-          ? { top: 10, bottom: 10, left: 30, right: 30 }
-          : { top: 20, bottom: 20, left: 60, right: 60 }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false },
-        datalabels: {
-          display: function(ctx) {
-            const value = ctx.dataset.data[ctx.dataIndex];
-            return total > 0 && (value / total) > 0.04;
+      return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: items.map(i => catLabel(i.category || i.name)),
+          datasets: [{
+            data: items.map(i => i.value),
+            backgroundColor: colors,
+            borderColor: 'transparent',
+            borderWidth: 2,
+            hoverOffset: 0,
+          }]
+        },
+        options: {
+          cutout: '42%',
+          responsive: true,
+          maintainAspectRatio: true,
+          events: [],
+          layout: {
+            padding: window.innerWidth <= 768
+              ? { top: 10, bottom: 10, left: 30, right: 30 }
+              : { top: 20, bottom: 20, left: 60, right: 60 }
           },
-          anchor: 'center',
-          align: 'center',
-          offset: 0,
-          color: '#ffffff',
-          textAlign: 'center',
-          font: function(ctx) {
-            const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
-            const pct = total > 0 ? (value / total) : 0;
-            const isMobile = window.innerWidth <= 768;
-            const baseSize = isMobile ? 13 : 18;
-            return {
-              family: "'Noto Sans JP', sans-serif",
-              weight: 900,
-              size: pct > 0.25 ? baseSize + 3 : (pct > 0.1 ? baseSize : baseSize - 3)
-            };
-          },
-          formatter: function(value, ctx) {
-            const item = items[ctx.dataIndex];
-            if (!item) return '';
-            const label = catLabel(item.category || item.name);
-            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-            return label + '\n' + fmtNoComma(value) + '万\n' + pct + '%';
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+            datalabels: {
+              display: function (ctx) {
+                const value = ctx.dataset.data[ctx.dataIndex];
+                return total > 0 && (value / total) > 0.04;
+              },
+              anchor: 'center',
+              align: 'center',
+              offset: 0,
+              color: '#ffffff',
+              textAlign: 'center',
+              font: function (ctx) {
+                const value = ctx.dataset ? ctx.dataset.data[ctx.dataIndex] : 0;
+                const pct = total > 0 ? (value / total) : 0;
+                const isMobile = window.innerWidth <= 768;
+                const baseSize = isMobile ? 13 : 18;
+                return {
+                  family: "'Noto Sans JP', sans-serif",
+                  weight: 900,
+                  size: pct > 0.25 ? baseSize + 3 : (pct > 0.1 ? baseSize : baseSize - 3)
+                };
+              },
+              formatter: function (value, ctx) {
+                const item = items[ctx.dataIndex];
+                if (!item) return '';
+                const label = catLabel(item.category || item.name);
+                const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return label + '\n' + fmtNoComma(value) + '万\n' + pct + '%';
+              }
+            }
           }
-        }
-      }
-    },
-    plugins: []
-  });
-}
+        },
+        plugins: []
+      });
+    }
 
-function makeAllTable(items, total) {
-  let rows = '';
-  items.filter(i => i.value !== 0).forEach(i => {
-    const cat = i.category && i.category !== '-' ? i.category : '';
-    const col = cat ? catColor(cat) : DEFAULT_COLOR;
-    const isNeg = i.value < 0;
-    const catCell = cat
-      ? `<td><span class="badge" style="background:${col}15;color:${col}">${catLabel(cat)}</span></td>`
-      : `<td><span class="badge" style="background:#f0f1f3;color:#6b7280">—</span></td>`;
-    rows += `<tr data-category="${cat}">
+    function makeAllTable(items, total) {
+      let rows = '';
+      items.filter(i => i.value !== 0).forEach(i => {
+        const cat = i.category && i.category !== '-' ? i.category : '';
+        const col = cat ? catColor(cat) : DEFAULT_COLOR;
+        const isNeg = i.value < 0;
+        const catCell = cat
+          ? `<td><span class="badge" style="background:${col}15;color:${col}">${catLabel(cat)}</span></td>`
+          : `<td><span class="badge" style="background:#f0f1f3;color:#6b7280">—</span></td>`;
+        rows += `<tr data-category="${cat}">
       <td class="name">${i.name}</td>
       ${catCell}
-      <td class="r ${isNeg?'neg':''}">${isNeg?'−':''}${fmtNoComma(Math.abs(i.value))}<span style="font-size:0.65rem;color:var(--muted);margin-left:3px">万円</span></td>
+      <td class="r ${isNeg ? 'neg' : ''}">${isNeg ? '−' : ''}${fmtNoComma(Math.abs(i.value))}<span style="font-size:0.65rem;color:var(--muted);margin-left:3px">万円</span></td>
     </tr>`;
-  });
-  return `<div class="table-wrap">
+      });
+      return `<div class="table-wrap">
     <div class="table-scroll"><table>
       <thead><tr><th>NAME</th><th>CATEGORY</th><th class="r">AMOUNT</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>
   </div>`;
-}
+    }
 
-async function init() {
-  try {
-    const res = await fetch('./data.json');
-    if (!res.ok) throw new Error('fetch failed');
-    const data = await res.json();
-    render(data);
-  } catch(e) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('error').style.display = 'block';
-  }
-}
+    async function init() {
+      try {
+        const res = await fetch('./data.json');
+        if (!res.ok) throw new Error('fetch failed');
+        const data = await res.json();
+        render(data);
+      } catch (e) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+      }
+    }
 
-function render(data) {
-  document.getElementById('loading').style.display = 'none';
-  const main = document.getElementById('main');
-  main.style.display = 'block';
+    function render(data) {
+      document.getElementById('loading').style.display = 'none';
+      const main = document.getElementById('main');
+      main.style.display = 'block';
 
-  const positiveCats = data.categories.filter(c => c.value > 0);
+      const positiveCats = data.categories.filter(c => c.value > 0);
 
-  let catCards = '';
-  positiveCats.forEach(c => {
-    const col = catColor(c.name);
-    const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
-    catCards += `<div class="card" style="--card-color:${col}" data-cat="${c.name}">
+      let catCards = '';
+      positiveCats.forEach(c => {
+        const col = catColor(c.name);
+        const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
+        catCards += `<div class="card" style="--card-color:${col}" data-cat="${c.name}">
       <div class="card-label">${catLabel(c.name)}</div>
       <div class="card-row">
         <div class="card-value" style="color:${col}">${fmtNoComma(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:3px">万円</span></div>
         <div class="card-pct">${pct}%</div>
       </div>
     </div>`;
-  });
+      });
 
-  main.innerHTML = `
+      main.innerHTML = `
     <header>
       <div class="logo">
         <div class="logo-dot"></div>
@@ -522,37 +645,43 @@ function render(data) {
     ${makeAllTable(data.accounts, data.total)}
   `;
 
-  setTimeout(() => {
-    const ovItems = positiveCats.map(c => ({...c, category: c.name}));
-    makeDoughnut('pie-main', ovItems, data.total);
-  }, 80);
+      setTimeout(() => {
+        const ovItems = positiveCats.map(c => ({ ...c, category: c.name }));
+        makeDoughnut('pie-main', ovItems, data.total);
+      }, 80);
 
-  // Card click → filter table
-  let activeFilter = null;
-  setTimeout(() => {
-    document.querySelectorAll('.card[data-cat]').forEach(card => {
-      card.addEventListener('click', () => {
-        const cat = card.dataset.cat;
-        if (activeFilter === cat) {
-          // Deselect
-          activeFilter = null;
-          card.classList.remove('active');
-          document.querySelectorAll('table tbody tr').forEach(tr => tr.style.display = '');
-        } else {
-          // Select
-          activeFilter = cat;
-          document.querySelectorAll('.card[data-cat]').forEach(c => c.classList.remove('active'));
-          card.classList.add('active');
-          document.querySelectorAll('table tbody tr').forEach(tr => {
-            tr.style.display = tr.dataset.category === cat ? '' : 'none';
+      // Card click → filter table
+      let activeFilter = null;
+      setTimeout(() => {
+        document.querySelectorAll('.card[data-cat]').forEach(card => {
+          card.addEventListener('click', () => {
+            const cat = card.dataset.cat;
+            if (activeFilter === cat) {
+              // Deselect
+              activeFilter = null;
+              card.classList.remove('active');
+              document.querySelectorAll('table tbody tr').forEach(tr => tr.style.display = '');
+            } else {
+              // Select
+              activeFilter = cat;
+              document.querySelectorAll('.card[data-cat]').forEach(c => c.classList.remove('active'));
+              card.classList.add('active');
+              document.querySelectorAll('table tbody tr').forEach(tr => {
+                tr.style.display = tr.dataset.category === cat ? '' : 'none';
+              });
+            }
           });
-        }
-      });
-    });
-  }, 100);
-}
+        });
+      }, 100);
+    }
 
-init();
-</script>
+    init();
+
+    // Service Worker 登録
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => { });
+    }
+  </script>
 </body>
+
 </html>
