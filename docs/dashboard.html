@@ -459,7 +459,16 @@ function render(data) {
   const main = document.getElementById('main');
   main.style.display = 'block';
 
-  const positiveCats = data.categories;
+  // CAT_CONFIGに定義された全カテゴリーを表示（data.jsonに無いものは0円で補完）
+  const existingNames = new Set(data.categories.map(c => c.name));
+  const allCats = [...data.categories];
+  Object.keys(CAT_CONFIG).forEach(name => {
+    if (!existingNames.has(name)) {
+      allCats.push({ name: name, value: 0 });
+    }
+  });
+
+  const positiveCats = allCats;
 
   let catCards = '';
   positiveCats.forEach(c => {
