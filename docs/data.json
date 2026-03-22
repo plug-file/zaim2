@@ -1,5 +1,5 @@
 {
-  "updated": "2026/03/21 12:54",
+  "updated": "2026/03/22 13:09",
   "total": 6474,
   "accounts": [
     {
@@ -19,7 +19,7 @@
     },
     {
       "name": "Kyash",
-      "value": 8,
+      "value": 7,
       "category": "-"
     },
     {
@@ -104,12 +104,12 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 309,
+      "value": 198,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 0,
+      "value": 111,
       "category": "暗号"
     },
     {
@@ -136,7 +136,7 @@
   "categories": [
     {
       "name": "円",
-      "value": 2851
+      "value": 2740
     },
     {
       "name": "GLD",
@@ -155,12 +155,12 @@
       "value": 382
     },
     {
-      "name": "日本",
-      "value": 7
+      "name": "暗号",
+      "value": 111
     },
     {
-      "name": "暗号",
-      "value": 0
+      "name": "日本",
+      "value": 7
     }
   ]
 }
