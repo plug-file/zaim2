@@ -334,14 +334,14 @@ tr:hover td { background: #f5f6f8; }
 
 <script>
 const CAT_CONFIG = {
-  "GLD":  { color: "#d97706", label: "ゴールド" },
+  "GLD":  { color: "#eab308", label: "ゴールド" },
   "円":   { color: "#db2777", label: "円資産" },
   "ドル": { color: "#6366f1", label: "ドル資産" },
   "VT":   { color: "#2563eb", label: "全世界株" },
-  "債券": { color: "#059669", label: "債券" },
+  "債券": { color: "#84cc16", label: "債券" },
   "暗号": { color: "#9ca3af", label: "暗号資産" },
-  "日本": { color: "#dc2626", label: "日本株" },
-  "サウス":{ color: "#0d9488", label: "サウス" },
+  "日本": { color: "#ea580c", label: "日本株" },
+  "サウス":{ color: "#16a34a", label: "サウス" },
 };
 const DEFAULT_COLOR = "#6b7280";
 
@@ -459,7 +459,7 @@ function render(data) {
   const main = document.getElementById('main');
   main.style.display = 'block';
 
-  const positiveCats = data.categories.filter(c => c.value > 0);
+  const positiveCats = data.categories;
 
   let catCards = '';
   positiveCats.forEach(c => {
