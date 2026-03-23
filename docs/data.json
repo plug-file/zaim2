@@ -1,6 +1,6 @@
 {
-  "updated": "2026/03/22 13:09",
-  "total": 6474,
+  "updated": "2026/03/23 09:22",
+  "total": 6471,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -39,7 +39,7 @@
     },
     {
       "name": "三井住友カード Olive",
-      "value": -22,
+      "value": -23,
       "category": "-"
     },
     {
@@ -104,12 +104,12 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 198,
+      "value": 306,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 111,
+      "value": 0,
       "category": "暗号"
     },
     {
@@ -136,7 +136,7 @@
   "categories": [
     {
       "name": "円",
-      "value": 2740
+      "value": 2848
     },
     {
       "name": "GLD",
@@ -155,12 +155,12 @@
       "value": 382
     },
     {
-      "name": "暗号",
-      "value": 111
-    },
-    {
       "name": "日本",
       "value": 7
+    },
+    {
+      "name": "暗号",
+      "value": 0
     }
   ]
 }
