@@ -1,10 +1,10 @@
 {
-  "updated": "2026/03/23 10:57",
-  "total": 6281,
+  "updated": "2026/03/23 13:16",
+  "total": 6279,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
-      "value": 248,
+      "value": 246,
       "category": "円"
     },
     {
@@ -24,7 +24,7 @@
     },
     {
       "name": "楽天カード(Visa) XXXX...",
-      "value": -15,
+      "value": -30,
       "category": "-"
     },
     {
@@ -98,6 +98,11 @@
       "category": "ドル"
     },
     {
+      "name": "その他合計",
+      "value": 0,
+      "category": "ドル"
+    },
+    {
       "name": "JPY (bitbank)",
       "value": 306,
       "category": "円"
@@ -131,7 +136,7 @@
   "categories": [
     {
       "name": "円",
-      "value": 2848
+      "value": 2846
     },
     {
       "name": "GLD",
