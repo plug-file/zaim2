@@ -1,6 +1,6 @@
 {
-  "updated": "2026/03/24 13:07",
-  "total": 6233,
+  "updated": "2026/03/25 13:08",
+  "total": 6759,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -44,7 +44,7 @@
     },
     {
       "name": "SBI 証券",
-      "value": 824,
+      "value": 1276,
       "category": "-"
     },
     {
@@ -74,7 +74,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 151,
+      "value": 152,
       "category": "VT"
     },
     {
@@ -84,7 +84,7 @@
     },
     {
       "name": "現金残高等",
-      "value": 205,
+      "value": 656,
       "category": "円"
     },
     {
@@ -104,7 +104,7 @@
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 1982,
+      "value": 2056,
       "category": "GLD"
     },
     {
@@ -126,11 +126,11 @@
   "categories": [
     {
       "name": "円",
-      "value": 2847
+      "value": 3298
     },
     {
       "name": "GLD",
-      "value": 1982
+      "value": 2056
     },
     {
       "name": "ドル",
@@ -138,7 +138,7 @@
     },
     {
       "name": "VT",
-      "value": 431
+      "value": 432
     },
     {
       "name": "債券",
