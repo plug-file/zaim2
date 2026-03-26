@@ -1,10 +1,10 @@
 {
-  "updated": "2026/03/25 13:08",
-  "total": 6759,
+  "updated": "2026/03/26 13:22",
+  "total": 6307,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
-      "value": 246,
+      "value": 244,
       "category": "円"
     },
     {
@@ -14,12 +14,12 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -60,
+      "value": -61,
       "category": "-"
     },
     {
       "name": "Kyash",
-      "value": 6,
+      "value": 8,
       "category": "-"
     },
     {
@@ -34,17 +34,17 @@
     },
     {
       "name": "三井住友カード Amazon...",
-      "value": -3,
+      "value": -2,
       "category": "-"
     },
     {
       "name": "三井住友カード Olive",
-      "value": -23,
+      "value": -11,
       "category": "-"
     },
     {
       "name": "SBI 証券",
-      "value": 1276,
+      "value": 825,
       "category": "-"
     },
     {
@@ -64,12 +64,12 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 340,
+      "value": 339,
       "category": "債券"
     },
     {
       "name": "楽天",
-      "value": 7,
+      "value": 8,
       "category": "日本"
     },
     {
@@ -88,11 +88,6 @@
       "category": "円"
     },
     {
-      "name": "米ドル現金",
-      "value": 451,
-      "category": "ドル"
-    },
-    {
       "name": "JPY (bitbank)",
       "value": 306,
       "category": "円"
@@ -104,7 +99,7 @@
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2056,
+      "value": 2057,
       "category": "GLD"
     },
     {
@@ -126,15 +121,11 @@
   "categories": [
     {
       "name": "円",
-      "value": 3298
+      "value": 3296
     },
     {
       "name": "GLD",
-      "value": 2056
-    },
-    {
-      "name": "ドル",
-      "value": 586
+      "value": 2057
     },
     {
       "name": "VT",
@@ -142,11 +133,15 @@
     },
     {
       "name": "債券",
-      "value": 380
+      "value": 379
+    },
+    {
+      "name": "ドル",
+      "value": 135
     },
     {
       "name": "日本",
-      "value": 7
+      "value": 8
     },
     {
       "name": "暗号",
