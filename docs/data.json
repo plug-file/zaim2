@@ -1,6 +1,6 @@
 {
-  "updated": "2026/03/27 13:24",
-  "total": 6223,
+  "updated": "2026/03/28 13:08",
+  "total": 6238,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -14,17 +14,17 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -61,
+      "value": -66,
       "category": "-"
     },
     {
       "name": "Kyash",
-      "value": 8,
+      "value": 7,
       "category": "-"
     },
     {
       "name": "楽天カード(Visa) XXXX...",
-      "value": -30,
+      "value": -15,
       "category": "-"
     },
     {
@@ -44,12 +44,12 @@
     },
     {
       "name": "SBI 証券",
-      "value": 827,
+      "value": 845,
       "category": "-"
     },
     {
       "name": "楽天証券",
-      "value": 273,
+      "value": 269,
       "category": "VT"
     },
     {
@@ -64,7 +64,7 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 339,
+      "value": 341,
       "category": "債券"
     },
     {
@@ -74,7 +74,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 154,
+      "value": 151,
       "category": "VT"
     },
     {
@@ -84,17 +84,17 @@
     },
     {
       "name": "現金残高等",
-      "value": 656,
+      "value": 676,
       "category": "円"
     },
     {
       "name": "JPY (bitbank)",
-      "value": 306,
+      "value": 200,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 0,
+      "value": 106,
       "category": "暗号"
     },
     {
@@ -121,7 +121,7 @@
   "categories": [
     {
       "name": "円",
-      "value": 3271
+      "value": 3185
     },
     {
       "name": "GLD",
@@ -129,23 +129,23 @@
     },
     {
       "name": "VT",
-      "value": 437
+      "value": 430
     },
     {
       "name": "債券",
-      "value": 379
+      "value": 381
     },
     {
       "name": "ドル",
       "value": 135
     },
     {
-      "name": "日本",
-      "value": 7
+      "name": "暗号",
+      "value": 106
     },
     {
-      "name": "暗号",
-      "value": 0
+      "name": "日本",
+      "value": 7
     }
   ]
 }
