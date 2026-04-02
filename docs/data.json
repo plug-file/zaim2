@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/01 13:38",
-  "total": 6371,
+  "updated": "2026/04/02 13:17",
+  "total": 6430,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -14,12 +14,12 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -66,
+      "value": -76,
       "category": "-"
     },
     {
       "name": "Kyash",
-      "value": 7,
+      "value": 6,
       "category": "-"
     },
     {
@@ -44,12 +44,12 @@
     },
     {
       "name": "SBI 証券",
-      "value": 842,
+      "value": 845,
       "category": "-"
     },
     {
       "name": "楽天証券",
-      "value": 265,
+      "value": 285,
       "category": "VT"
     },
     {
@@ -64,17 +64,17 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 339,
+      "value": 340,
       "category": "債券"
     },
     {
       "name": "楽天",
-      "value": 7,
+      "value": 8,
       "category": "日本"
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 149,
+      "value": 152,
       "category": "VT"
     },
     {
@@ -89,17 +89,17 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 200,
+      "value": 309,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 108,
+      "value": 0,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2132,
+      "value": 2165,
       "category": "GLD"
     },
     {
@@ -121,31 +121,31 @@
   "categories": [
     {
       "name": "円",
-      "value": 3186
+      "value": 3295
     },
     {
       "name": "GLD",
-      "value": 2132
+      "value": 2165
     },
     {
       "name": "VT",
-      "value": 424
+      "value": 447
     },
     {
       "name": "債券",
-      "value": 379
+      "value": 380
     },
     {
       "name": "ドル",
       "value": 135
     },
     {
-      "name": "暗号",
-      "value": 108
+      "name": "日本",
+      "value": 8
     },
     {
-      "name": "日本",
-      "value": 7
+      "name": "暗号",
+      "value": 0
     }
   ]
 }
