@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/04 13:06",
-  "total": 6413,
+  "updated": "2026/04/05 13:27",
+  "total": 6416,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -14,7 +14,7 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -76,
+      "value": -78,
       "category": "-"
     },
     {
@@ -49,7 +49,7 @@
     },
     {
       "name": "楽天証券",
-      "value": 287,
+      "value": 289,
       "category": "VT"
     },
     {
@@ -74,7 +74,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 153,
+      "value": 154,
       "category": "VT"
     },
     {
@@ -129,7 +129,7 @@
     },
     {
       "name": "VT",
-      "value": 450
+      "value": 453
     },
     {
       "name": "債券",
