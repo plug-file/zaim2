@@ -1,10 +1,10 @@
 {
-  "updated": "2026/04/06 13:34",
-  "total": 6387,
+  "updated": "2026/04/07 13:23",
+  "total": 6358,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
-      "value": 234,
+      "value": 24,
       "category": "円"
     },
     {
@@ -14,7 +14,7 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -78,
+      "value": -79,
       "category": "-"
     },
     {
@@ -43,8 +43,13 @@
       "category": "-"
     },
     {
+      "name": "三井住友銀行 オリーブ...",
+      "value": 40,
+      "category": "-"
+    },
+    {
       "name": "SBI 証券",
-      "value": 847,
+      "value": 1161,
       "category": "-"
     },
     {
@@ -64,12 +69,22 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 340,
+      "value": 342,
       "category": "債券"
     },
     {
+      "name": "iシェアーズ MSCI ドイツ ETF",
+      "value": 83,
+      "category": "-"
+    },
+    {
+      "name": "iシェアーズ MSCI ポーランド ETF",
+      "value": 71,
+      "category": "-"
+    },
+    {
       "name": "楽天",
-      "value": 7,
+      "value": 8,
       "category": "日本"
     },
     {
@@ -88,29 +103,34 @@
       "category": "円"
     },
     {
+      "name": "米ドル現金",
+      "value": 160,
+      "category": "ドル"
+    },
+    {
       "name": "JPY (bitbank)",
-      "value": 312,
+      "value": 90,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 0,
+      "value": 220,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2104,
+      "value": 2124,
       "category": "GLD"
     },
     {
       "name": "BITGET",
       "value": 25,
-      "category": "ドル"
+      "category": "暗号"
     },
     {
       "name": "ロボプロ",
       "value": 10,
-      "category": "ドル"
+      "category": "VT"
     },
     {
       "name": "SBI FX",
@@ -121,31 +141,31 @@
   "categories": [
     {
       "name": "円",
-      "value": 3298
+      "value": 2866
     },
     {
       "name": "GLD",
-      "value": 2104
+      "value": 2124
     },
     {
       "name": "VT",
-      "value": 453
+      "value": 463
     },
     {
       "name": "債券",
-      "value": 390
+      "value": 392
     },
     {
       "name": "ドル",
-      "value": 135
-    },
-    {
-      "name": "日本",
-      "value": 7
+      "value": 260
     },
     {
       "name": "暗号",
-      "value": 0
+      "value": 245
+    },
+    {
+      "name": "日本",
+      "value": 8
     }
   ]
 }
