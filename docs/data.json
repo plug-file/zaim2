@@ -1,10 +1,10 @@
 {
-  "updated": "2026/04/09 13:22",
-  "total": 6210,
+  "updated": "2026/04/10 13:36",
+  "total": 6193,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
-      "value": 421,
+      "value": 361,
       "category": "円"
     },
     {
@@ -14,12 +14,12 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -79,
+      "value": -29,
       "category": "-"
     },
     {
       "name": "Kyash",
-      "value": 5,
+      "value": 9,
       "category": "-"
     },
     {
@@ -49,12 +49,12 @@
     },
     {
       "name": "SBI 証券",
-      "value": 612,
+      "value": 628,
       "category": "-"
     },
     {
       "name": "楽天証券",
-      "value": 289,
+      "value": 296,
       "category": "VT"
     },
     {
@@ -69,7 +69,7 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 342,
+      "value": 341,
       "category": "債券"
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       "name": "iシェアーズ MSCI ポーランド ETF",
-      "value": 73,
+      "value": 74,
       "category": "-"
     },
     {
@@ -89,12 +89,12 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 154,
+      "value": 159,
       "category": "VT"
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 10,
+      "value": 20,
       "category": "VT"
     },
     {
@@ -108,18 +108,23 @@
       "category": "ドル"
     },
     {
+      "name": "その他合計",
+      "value": 0,
+      "category": "ドル"
+    },
+    {
       "name": "JPY (bitbank)",
-      "value": 309,
+      "value": 194,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 0,
+      "value": 115,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2135,
+      "value": 2157,
       "category": "GLD"
     },
     {
@@ -141,27 +146,27 @@
   "categories": [
     {
       "name": "円",
-      "value": 3082
+      "value": 2907
     },
     {
       "name": "GLD",
-      "value": 2135
+      "value": 2157
     },
     {
       "name": "VT",
-      "value": 463
+      "value": 485
     },
     {
       "name": "債券",
-      "value": 392
+      "value": 391
+    },
+    {
+      "name": "暗号",
+      "value": 140
     },
     {
       "name": "ドル",
       "value": 105
-    },
-    {
-      "name": "暗号",
-      "value": 25
     },
     {
       "name": "日本",
