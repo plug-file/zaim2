@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/13 13:48",
-  "total": 6170,
+  "updated": "2026/04/14 13:36",
+  "total": 6208,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -14,7 +14,7 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -29,
+      "value": -30,
       "category": "-"
     },
     {
@@ -49,12 +49,12 @@
     },
     {
       "name": "SBI 証券",
-      "value": 630,
+      "value": 633,
       "category": "-"
     },
     {
       "name": "楽天証券",
-      "value": 297,
+      "value": 298,
       "category": "VT"
     },
     {
@@ -74,12 +74,12 @@
     },
     {
       "name": "iシェアーズ MSCI ドイツ ETF",
-      "value": 86,
+      "value": 87,
       "category": "-"
     },
     {
       "name": "iシェアーズ MSCI ポーランド ETF",
-      "value": 75,
+      "value": 76,
       "category": "-"
     },
     {
@@ -114,17 +114,17 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 194,
+      "value": 312,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 114,
+      "value": 0,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2131,
+      "value": 2164,
       "category": "GLD"
     },
     {
@@ -146,27 +146,27 @@
   "categories": [
     {
       "name": "円",
-      "value": 2907
+      "value": 3025
     },
     {
       "name": "GLD",
-      "value": 2131
+      "value": 2164
     },
     {
       "name": "VT",
-      "value": 487
+      "value": 488
     },
     {
       "name": "債券",
       "value": 393
     },
     {
-      "name": "暗号",
-      "value": 139
-    },
-    {
       "name": "ドル",
       "value": 105
+    },
+    {
+      "name": "暗号",
+      "value": 25
     },
     {
       "name": "日本",
