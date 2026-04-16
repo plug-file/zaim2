@@ -12,6 +12,19 @@
 <meta name="theme-color" content="#2563eb">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<script>
+// ── ページ読み込み前に保存済みテーマを即適用（ちらつき防止） ──
+(function() {
+  try {
+    const saved = localStorage.getItem('zaim2_theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', '#0f1419');
+    }
+  } catch(e) {}
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
@@ -23,7 +36,31 @@
   --text: #1a1d23;
   --muted: #6b7280;
   --red: #dc2626;
+  --table-head-bg: #374151;
+  --table-head-text: #ffffff;
+  --row-border: #f0f1f3;
+  --row-hover: #f5f6f8;
+  --empty-badge-bg: #f0f1f3;
+  --empty-badge-text: #6b7280;
+  --select-bg: #ffffff;
   --font: 'Noto Sans JP', sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1419;
+  --surface: #1a1f26;
+  --border: #2a3038;
+  --accent: #60a5fa;
+  --text: #e4e7eb;
+  --muted: #9ca3af;
+  --red: #f87171;
+  --table-head-bg: #2a3038;
+  --table-head-text: #e4e7eb;
+  --row-border: #242930;
+  --row-hover: #222830;
+  --empty-badge-bg: #2a3038;
+  --empty-badge-text: #9ca3af;
+  --select-bg: #1a1f26;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,6 +83,30 @@ body {
 }
 
 /* ── Header (removed) ── */
+
+/* ── テーマ切替ボタン ── */
+.theme-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-toggle:hover { transform: scale(1.08); }
+.theme-toggle:active { transform: scale(0.95); }
 
 .donut-timestamp {
   position: absolute;
@@ -199,8 +260,8 @@ th {
   font-family: var(--font);
   font-size: 0.68rem;
   font-weight: 700;
-  color: #ffffff;
-  background: #374151;
+  color: var(--table-head-text);
+  background: var(--table-head-bg);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 10px 20px;
@@ -211,7 +272,7 @@ th {
 th.r { text-align: right; }
 td {
   padding: 10px 20px;
-  border-bottom: 1px solid #f0f1f3;
+  border-bottom: 1px solid var(--row-border);
   font-family: var(--font);
   font-size: 0.92rem;
   font-weight: 700;
@@ -228,7 +289,7 @@ td.name {
   max-width: 320px;
 }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: #f5f6f8; }
+tr:hover td { background: var(--row-hover); }
 
 .badge {
   display: inline-block;
@@ -263,7 +324,7 @@ tr:hover td { background: #f5f6f8; }
   padding: 3px 6px;
   border-radius: 4px;
   border: 2px solid var(--accent);
-  background: #fff;
+  background: var(--select-bg);
   color: var(--text);
   cursor: pointer;
   outline: none;
@@ -292,7 +353,7 @@ tr:hover td { background: #f5f6f8; }
   padding: 4px 10px;
   border-radius: 4px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   cursor: pointer;
   letter-spacing: 0.05em;
@@ -391,6 +452,8 @@ tr:hover td { background: #f5f6f8; }
 </head>
 <body>
 
+<button id="theme-toggle" class="theme-toggle" aria-label="テーマ切替" title="ライト/ダーク切替">🌙</button>
+
 <div class="container">
   <div id="loading">LOADING...</div>
   <div id="error">データの読み込みに失敗しました。<br>data.json が同じディレクトリにあるか確認してください。</div>
@@ -464,7 +527,46 @@ function catColor(c) { return (CAT_CONFIG[c]||{}).color||DEFAULT_COLOR; }
 function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
 function fmtNoComma(v) { return String(Math.round(v)); }
 
-Chart.defaults.color = '#6b7280';
+// ── テーマ切替機能 ──
+const THEME_KEY = 'zaim2_theme';
+
+function getTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+}
+
+function applyChartTheme() {
+  // CSS変数から色を読み取ってChart.jsのデフォルトに反映
+  const styles = getComputedStyle(document.documentElement);
+  Chart.defaults.color = styles.getPropertyValue('--muted').trim() || '#6b7280';
+}
+
+function setTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  try { localStorage.setItem(THEME_KEY, theme); } catch(e) {}
+  // ステータスバー色を更新（iOSホーム画面アプリ対応）
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0f1419' : '#2563eb');
+  updateThemeButton();
+  applyChartTheme();
+  // 既存のグラフを再描画してラベル色を更新
+  if (_rawData) rerender();
+}
+
+function updateThemeButton() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  btn.textContent = getTheme() === 'dark' ? '☀️' : '🌙';
+}
+
+function toggleTheme() {
+  setTheme(getTheme() === 'dark' ? 'light' : 'dark');
+}
+
+applyChartTheme();
 Chart.defaults.font.family = "'Noto Sans JP', sans-serif";
 Chart.defaults.font.weight = 700;
 
@@ -543,7 +645,7 @@ function makeAllTable(items, total) {
     const overrideClass = i._overridden ? ' overridden' : '';
     const catCell = cat
       ? `<td><span class="badge${overrideClass}" data-name="${escapeHtml(i.name)}" data-cat="${cat}" style="background:${col}15;color:${col}">${catLabel(cat)}</span></td>`
-      : `<td><span class="badge${overrideClass}" data-name="${escapeHtml(i.name)}" data-cat="" style="background:#f0f1f3;color:#6b7280">—</span></td>`;
+      : `<td><span class="badge${overrideClass}" data-name="${escapeHtml(i.name)}" data-cat="" style="background:var(--empty-badge-bg);color:var(--empty-badge-text)">—</span></td>`;
     rows += `<tr data-category="${cat}">
       <td class="name">${i.name}</td>
       ${catCell}
@@ -753,6 +855,10 @@ function showCategoryPicker(badgeEl, name, currentCat) {
 
   select.addEventListener('blur', cleanup);
 }
+
+// テーマ切替ボタンの初期化
+updateThemeButton();
+document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
 init();
 
