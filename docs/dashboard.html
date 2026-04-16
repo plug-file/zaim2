@@ -43,6 +43,7 @@
   --empty-badge-bg: #f0f1f3;
   --empty-badge-text: #6b7280;
   --select-bg: #ffffff;
+  --card-active-bg: color-mix(in srgb, var(--card-color) 8%, white);
   --font: 'Noto Sans JP', sans-serif;
 }
 
@@ -61,6 +62,7 @@
   --empty-badge-bg: #2a3038;
   --empty-badge-text: #9ca3af;
   --select-bg: #1a1f26;
+  --card-active-bg: #2a3038;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -113,7 +115,7 @@ body {
   bottom: 6px;
   right: 6px;
   font-family: var(--font);
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.03em;
@@ -214,7 +216,7 @@ body {
   user-select: none;
 }
 .card:hover { border-color: var(--card-color); }
-.card.active { border-color: var(--card-color); background: color-mix(in srgb, var(--card-color) 8%, white); }
+.card.active { border-color: var(--card-color); background: var(--card-active-bg); }
 
 .card-label {
   font-family: var(--font);
@@ -334,10 +336,12 @@ tr:hover td { background: var(--row-hover); }
   gap: 8px;
   justify-content: flex-end;
   align-items: center;
-  padding: 8px 4px;
+  padding: 10px 14px;
   font-size: 0.7rem;
   color: var(--muted);
   flex-wrap: wrap;
+  border-top: 1px solid var(--row-border);
+  background: var(--surface);
 }
 .edit-toolbar .hint {
   margin-right: auto;
@@ -430,7 +434,7 @@ tr:hover td { background: var(--row-hover); }
   .donut-timestamp {
     bottom: 2vw;
     right: 2vw;
-    font-size: 0.7rem;
+    font-size: 0.84rem;
   }
   .overview-section {
     width: 100%;
@@ -526,6 +530,12 @@ function recalcCategories(accounts) {
 function catColor(c) { return (CAT_CONFIG[c]||{}).color||DEFAULT_COLOR; }
 function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
 function fmtNoComma(v) { return String(Math.round(v)); }
+
+// "2026/04/11 13:10" → "04/11 13:10"（西暦を削除）
+function formatTimestamp(s) {
+  if (!s) return '';
+  return String(s).replace(/^\d{4}\//, '');
+}
 
 // ── テーマ切替機能 ──
 const THEME_KEY = 'zaim2_theme';
@@ -660,11 +670,11 @@ function makeAllTable(items, total) {
   </div>`;
 
   return `<div class="table-wrap">
-    ${toolbar}
     <div class="table-scroll"><table>
       <thead><tr><th>NAME</th><th>CATEGORY</th><th class="r">AMOUNT</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>
+    ${toolbar}
   </div>`;
 }
 
@@ -743,7 +753,7 @@ function render(data) {
             <div class="donut-center-value">${fmtNoComma(data.total)}</div>
             <div class="donut-center-unit">万円</div>
           </div>
-          <div class="donut-timestamp">${data.updated} 更新</div>
+          <div class="donut-timestamp">${formatTimestamp(data.updated)} 更新</div>
         </div>
       </div>
       <div class="overview-section">
