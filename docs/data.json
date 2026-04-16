@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/15 13:36",
-  "total": 6233,
+  "updated": "2026/04/16 13:42",
+  "total": 6237,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -49,12 +49,12 @@
     },
     {
       "name": "SBI 証券",
-      "value": 634,
+      "value": 637,
       "category": "-"
     },
     {
       "name": "楽天証券",
-      "value": 300,
+      "value": 302,
       "category": "VT"
     },
     {
@@ -74,7 +74,7 @@
     },
     {
       "name": "iシェアーズ MSCI ドイツ ETF",
-      "value": 87,
+      "value": 88,
       "category": "-"
     },
     {
@@ -89,7 +89,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 161,
+      "value": 163,
       "category": "VT"
     },
     {
@@ -119,12 +119,12 @@
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 118,
+      "value": 119,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2186,
+      "value": 2185,
       "category": "GLD"
     },
     {
@@ -150,11 +150,11 @@
     },
     {
       "name": "GLD",
-      "value": 2186
+      "value": 2185
     },
     {
       "name": "VT",
-      "value": 492
+      "value": 496
     },
     {
       "name": "債券",
@@ -162,7 +162,7 @@
     },
     {
       "name": "暗号",
-      "value": 143
+      "value": 144
     },
     {
       "name": "ドル",
