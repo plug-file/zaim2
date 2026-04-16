@@ -1,4 +1,4 @@
-const CACHE_NAME = 'billion-v2';
+const CACHE_NAME = 'billion-v3';
 
 self.addEventListener('install', event => {
   self.skipWaiting();

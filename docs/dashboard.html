@@ -241,6 +241,71 @@ tr:hover td { background: #f5f6f8; }
 }
 .neg { color: var(--red); }
 
+/* ── カテゴリ編集機能 ── */
+.badge {
+  cursor: pointer;
+  transition: transform 0.1s;
+  user-select: none;
+}
+.badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+.badge.overridden::after {
+  content: "✏️";
+  font-size: 0.6rem;
+  margin-left: 4px;
+}
+.cat-select {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 2px solid var(--accent);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+}
+.edit-toolbar {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 8px 4px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.edit-toolbar .hint {
+  margin-right: auto;
+  font-weight: 700;
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.edit-toolbar button {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.68rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+.edit-toolbar button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.edit-toolbar button.danger:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
 #loading {
   text-align: center;
   padding: 6rem;
@@ -345,6 +410,56 @@ const CAT_CONFIG = {
 };
 const DEFAULT_COLOR = "#6b7280";
 
+// ── カテゴリ上書き管理（localStorage） ──
+const STORAGE_KEY = "zaim2_category_overrides";
+
+function loadOverrides() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  } catch(e) {
+    return {};
+  }
+}
+
+function saveOverrides(obj) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+}
+
+function setOverride(name, category) {
+  const ov = loadOverrides();
+  if (category === "__clear__") {
+    delete ov[name];
+  } else {
+    ov[name] = category;
+  }
+  saveOverrides(ov);
+}
+
+function applyOverrides(accounts) {
+  const ov = loadOverrides();
+  return accounts.map(a => {
+    if (ov.hasOwnProperty(a.name)) {
+      return { ...a, category: ov[a.name], _overridden: true };
+    }
+    return a;
+  });
+}
+
+function recalcCategories(accounts) {
+  const totals = {};
+  accounts.forEach(a => {
+    const cat = a.category;
+    if (cat && cat !== "-") {
+      totals[cat] = (totals[cat] || 0) + a.value;
+    }
+  });
+  const total = Object.values(totals).reduce((a,b) => a+b, 0);
+  const categories = Object.entries(totals)
+    .map(([name, value]) => ({ name, value: Math.round(value) }))
+    .sort((a,b) => b.value - a.value);
+  return { total: Math.round(total), categories };
+}
+
 function catColor(c) { return (CAT_CONFIG[c]||{}).color||DEFAULT_COLOR; }
 function catLabel(c) { return (CAT_CONFIG[c]||{}).label||c; }
 function fmtNoComma(v) { return String(Math.round(v)); }
@@ -425,16 +540,25 @@ function makeAllTable(items, total) {
     const cat = i.category && i.category !== '-' ? i.category : '';
     const col = cat ? catColor(cat) : DEFAULT_COLOR;
     const isNeg = i.value < 0;
+    const overrideClass = i._overridden ? ' overridden' : '';
     const catCell = cat
-      ? `<td><span class="badge" style="background:${col}15;color:${col}">${catLabel(cat)}</span></td>`
-      : `<td><span class="badge" style="background:#f0f1f3;color:#6b7280">—</span></td>`;
+      ? `<td><span class="badge${overrideClass}" data-name="${escapeHtml(i.name)}" data-cat="${cat}" style="background:${col}15;color:${col}">${catLabel(cat)}</span></td>`
+      : `<td><span class="badge${overrideClass}" data-name="${escapeHtml(i.name)}" data-cat="" style="background:#f0f1f3;color:#6b7280">—</span></td>`;
     rows += `<tr data-category="${cat}">
       <td class="name">${i.name}</td>
       ${catCell}
       <td class="r ${isNeg?'neg':''}">${isNeg?'−':''}${fmtNoComma(Math.abs(i.value))}<span style="font-size:0.65rem;color:var(--muted);margin-left:3px">万円</span></td>
     </tr>`;
   });
+
+  const overrideCount = Object.keys(loadOverrides()).length;
+  const toolbar = `<div class="edit-toolbar">
+    <span class="hint">💡 カテゴリをタップで変更${overrideCount>0?` ・ ${overrideCount}件上書き中`:''}</span>
+    ${overrideCount>0?'<button id="btn-reset-overrides" class="danger">すべてリセット</button>':''}
+  </div>`;
+
   return `<div class="table-wrap">
+    ${toolbar}
     <div class="table-scroll"><table>
       <thead><tr><th>NAME</th><th>CATEGORY</th><th class="r">AMOUNT</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -442,22 +566,46 @@ function makeAllTable(items, total) {
   </div>`;
 }
 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let _rawData = null; // data.jsonの生データを保持
+
 async function init() {
   try {
     const res = await fetch('./data.json');
     if (!res.ok) throw new Error('fetch failed');
-    const data = await res.json();
-    render(data);
+    _rawData = await res.json();
+    rerender();
   } catch(e) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error').style.display = 'block';
   }
 }
 
+function rerender() {
+  if (!_rawData) return;
+  // overridesを適用して再計算
+  const accounts = applyOverrides(_rawData.accounts);
+  const { total, categories } = recalcCategories(accounts);
+  const data = {
+    ..._rawData,
+    accounts,
+    total,
+    categories,
+  };
+  render(data);
+}
+
 function render(data) {
   document.getElementById('loading').style.display = 'none';
   const main = document.getElementById('main');
   main.style.display = 'block';
+
+  // 既存のChart.jsインスタンスがあれば破棄（再描画時のメモリリーク防止）
+  const existingChart = Chart.getChart('pie-main');
+  if (existingChart) existingChart.destroy();
 
   // CAT_CONFIGに定義された全カテゴリーを表示（data.jsonに無いものは0円で補完）
   const existingNames = new Set(data.categories.map(c => c.name));
@@ -531,7 +679,79 @@ function render(data) {
         }
       });
     });
+
+    // ── バッジクリック → プルダウン表示 ──
+    document.querySelectorAll('.badge[data-name]').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const name = badge.dataset.name;
+        const currentCat = badge.dataset.cat;
+        showCategoryPicker(badge, name, currentCat);
+      });
+    });
+
+    // ── リセットボタン ──
+    const resetBtn = document.getElementById('btn-reset-overrides');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (confirm('すべてのカテゴリ上書き設定をリセットしますか？')) {
+          localStorage.removeItem(STORAGE_KEY);
+          rerender();
+        }
+      });
+    }
   }, 100);
+}
+
+// ── プルダウンでカテゴリ選択 ──
+function showCategoryPicker(badgeEl, name, currentCat) {
+  // 既に開いているselectがあれば閉じる
+  const existing = document.querySelector('.cat-select');
+  if (existing) existing.remove();
+
+  const select = document.createElement('select');
+  select.className = 'cat-select';
+
+  // 「指定なし」選択肢
+  const emptyOpt = document.createElement('option');
+  emptyOpt.value = '-';
+  emptyOpt.textContent = '— 未分類';
+  if (!currentCat) emptyOpt.selected = true;
+  select.appendChild(emptyOpt);
+
+  // CAT_CONFIGに定義されたカテゴリをすべて選択肢に
+  Object.entries(CAT_CONFIG).forEach(([key, cfg]) => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = cfg.label;
+    if (key === currentCat) opt.selected = true;
+    select.appendChild(opt);
+  });
+
+  // 「自動判定に戻す」
+  const clearOpt = document.createElement('option');
+  clearOpt.value = '__clear__';
+  clearOpt.textContent = '↺ 自動判定に戻す';
+  select.appendChild(clearOpt);
+
+  // バッジを置き換え
+  badgeEl.style.display = 'none';
+  badgeEl.parentNode.appendChild(select);
+  select.focus();
+
+  const cleanup = () => {
+    select.remove();
+    badgeEl.style.display = '';
+  };
+
+  select.addEventListener('change', () => {
+    const newCat = select.value;
+    setOverride(name, newCat);
+    cleanup();
+    rerender();
+  });
+
+  select.addEventListener('blur', cleanup);
 }
 
 init();
