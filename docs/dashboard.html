@@ -182,6 +182,21 @@ body {
   color: var(--text);
   line-height: 1.2;
   margin-top: 2px;
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.donut-center-value:hover {
+  background: rgba(128,128,128,0.08);
+}
+.donut-center-value.masked {
+  letter-spacing: 0.05em;
 }
 .donut-center-unit {
   font-family: var(--font);
@@ -750,7 +765,7 @@ function render(data) {
           <canvas id="pie-main"></canvas>
           <div class="donut-center">
             <div class="donut-center-label">TOTAL</div>
-            <div class="donut-center-value">${fmtNoComma(data.total)}</div>
+            <div class="donut-center-value" id="donut-center-value" data-real="${fmtNoComma(data.total)}" title="タップで表示／非表示">${fmtNoComma(data.total)}</div>
             <div class="donut-center-unit">万円</div>
           </div>
           <div class="donut-timestamp">${formatTimestamp(data.updated)} 更新</div>
@@ -768,6 +783,21 @@ function render(data) {
     const ovItems = positiveCats.map(c => ({...c, category: c.name}));
     makeDoughnut('pie-main', ovItems, data.total);
   }, 80);
+
+  // 円グラフ中央の金額タップで表示／非表示を切替
+  const centerValueEl = document.getElementById('donut-center-value');
+  if (centerValueEl) {
+    centerValueEl.addEventListener('click', () => {
+      const real = centerValueEl.dataset.real || '';
+      if (centerValueEl.classList.contains('masked')) {
+        centerValueEl.textContent = real;
+        centerValueEl.classList.remove('masked');
+      } else {
+        centerValueEl.textContent = '*'.repeat(real.length);
+        centerValueEl.classList.add('masked');
+      }
+    });
+  }
 
   // Card click → filter table
   let activeFilter = null;
