@@ -264,8 +264,8 @@ body {
   top: 6px;
   right: 10px;
   font-family: var(--font);
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 900;
   letter-spacing: 0.02em;
   line-height: 1;
 }
@@ -725,11 +725,11 @@ function escapeHtml(s) {
 function renderDiffHtml(diff) {
   if (diff === undefined || diff === null) return '';
   if (diff > 0) {
-    return `<div class="card-diff up">⇧${fmtNoComma(diff)}</div>`;
+    return `<div class="card-diff up">▲${fmtNoComma(diff)}万円</div>`;
   } else if (diff < 0) {
-    return `<div class="card-diff down">⇩${fmtNoComma(Math.abs(diff))}</div>`;
+    return `<div class="card-diff down">▼${fmtNoComma(Math.abs(diff))}万円</div>`;
   } else {
-    return `<div class="card-diff zero">±0</div>`;
+    return `<div class="card-diff zero">±0万円</div>`;
   }
 }
 
