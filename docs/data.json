@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/18 13:21",
-  "total": 6236,
+  "updated": "2026/04/19 00:26",
+  "total": 6161,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -9,7 +9,7 @@
     },
     {
       "name": "楽天銀行 サンバ支店 普...",
-      "value": 76,
+      "value": 75,
       "category": "円"
     },
     {
@@ -114,12 +114,12 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 70,
+      "value": 54,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 245,
+      "value": 187,
       "category": "暗号"
     },
     {
@@ -146,31 +146,39 @@
   "categories": [
     {
       "name": "円",
-      "value": 2783
+      "value": 2766,
+      "diff": -17
     },
     {
       "name": "GLD",
-      "value": 2174
+      "value": 2174,
+      "diff": 0
     },
     {
       "name": "VT",
-      "value": 501
+      "value": 501,
+      "diff": 0
     },
     {
       "name": "債券",
-      "value": 395
+      "value": 395,
+      "diff": 0
     },
     {
       "name": "暗号",
-      "value": 270
+      "value": 212,
+      "diff": -58
     },
     {
       "name": "ドル",
-      "value": 105
+      "value": 105,
+      "diff": 0
     },
     {
       "name": "日本",
-      "value": 8
+      "value": 8,
+      "diff": 0
     }
-  ]
+  ],
+  "total_diff": -75
 }
