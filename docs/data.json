@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/19 00:26",
-  "total": 6161,
+  "updated": "2026/04/19 00:50",
+  "total": 6329,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -75,12 +75,12 @@
     {
       "name": "iシェアーズ MSCI ドイツ ETF",
       "value": 90,
-      "category": "-"
+      "category": "サウス"
     },
     {
       "name": "iシェアーズ MSCI ポーランド ETF",
       "value": 78,
-      "category": "-"
+      "category": "サウス"
     },
     {
       "name": "楽天",
@@ -147,7 +147,7 @@
     {
       "name": "円",
       "value": 2766,
-      "diff": -17
+      "diff": 0
     },
     {
       "name": "GLD",
@@ -167,7 +167,11 @@
     {
       "name": "暗号",
       "value": 212,
-      "diff": -58
+      "diff": 0
+    },
+    {
+      "name": "サウス",
+      "value": 168
     },
     {
       "name": "ドル",
@@ -180,5 +184,5 @@
       "diff": 0
     }
   ],
-  "total_diff": -75
+  "total_diff": 168
 }
