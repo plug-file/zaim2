@@ -187,13 +187,6 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 6px;
-  transition: background 0.15s;
-}
-.donut-center-value:hover {
-  background: rgba(128,128,128,0.08);
 }
 .donut-center-value.masked {
   letter-spacing: 0.05em;
@@ -787,14 +780,22 @@ function render(data) {
   // 円グラフ中央の金額タップで表示／非表示を切替
   const centerValueEl = document.getElementById('donut-center-value');
   if (centerValueEl) {
+    // 再描画後もマスク状態を復元
+    if (window._centerMasked) {
+      const real = centerValueEl.dataset.real || '';
+      centerValueEl.textContent = '*'.repeat(real.length);
+      centerValueEl.classList.add('masked');
+    }
     centerValueEl.addEventListener('click', () => {
       const real = centerValueEl.dataset.real || '';
       if (centerValueEl.classList.contains('masked')) {
         centerValueEl.textContent = real;
         centerValueEl.classList.remove('masked');
+        window._centerMasked = false;
       } else {
         centerValueEl.textContent = '*'.repeat(real.length);
         centerValueEl.classList.add('masked');
+        window._centerMasked = true;
       }
     });
   }
