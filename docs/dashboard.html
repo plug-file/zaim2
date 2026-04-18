@@ -36,6 +36,7 @@
   --text: #1a1d23;
   --muted: #6b7280;
   --red: #dc2626;
+  --green: #16a34a;
   --table-head-bg: #374151;
   --table-head-text: #ffffff;
   --row-border: #f0f1f3;
@@ -55,6 +56,7 @@
   --text: #e4e7eb;
   --muted: #9ca3af;
   --red: #f87171;
+  --green: #4ade80;
   --table-head-bg: #2a3038;
   --table-head-text: #e4e7eb;
   --row-border: #242930;
@@ -256,6 +258,21 @@ body {
   color: var(--muted);
 }
 
+/* ── 差分バッジ ── */
+.card-diff {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.card-diff.up   { color: var(--green); }
+.card-diff.down { color: var(--red); }
+.card-diff.zero { color: var(--muted); }
+
 /* ── Table ── */
 .table-wrap {
   background: var(--surface);
@@ -456,6 +473,7 @@ tr:hover td { background: var(--row-hover); }
   .card-value { font-size: 1.1rem; }
   .card-label { font-size: 0.82rem; }
   .card-pct { font-size: 0.78rem; }
+  .card-diff { font-size: 0.72rem; top: 4px; right: 8px; }
   td.name { max-width: 160px; font-size: 0.82rem; }
   th { padding: 8px 12px; font-size: 0.6rem; }
   td { padding: 8px 12px; font-size: 0.82rem; }
@@ -520,7 +538,7 @@ function applyOverrides(accounts) {
   });
 }
 
-function recalcCategories(accounts) {
+function recalcCategories(accounts, originalCategories) {
   const totals = {};
   accounts.forEach(a => {
     const cat = a.category;
@@ -529,8 +547,21 @@ function recalcCategories(accounts) {
     }
   });
   const total = Object.values(totals).reduce((a,b) => a+b, 0);
+
+  // 元のdiff情報をマップ化
+  const diffMap = {};
+  if (originalCategories) {
+    originalCategories.forEach(c => {
+      if (c.diff !== undefined) diffMap[c.name] = c.diff;
+    });
+  }
+
   const categories = Object.entries(totals)
-    .map(([name, value]) => ({ name, value: Math.round(value) }))
+    .map(([name, value]) => {
+      const entry = { name, value: Math.round(value) };
+      if (diffMap[name] !== undefined) entry.diff = diffMap[name];
+      return entry;
+    })
     .sort((a,b) => b.value - a.value);
   return { total: Math.round(total), categories };
 }
@@ -690,6 +721,18 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// ── 差分HTML生成 ──
+function renderDiffHtml(diff) {
+  if (diff === undefined || diff === null) return '';
+  if (diff > 0) {
+    return `<div class="card-diff up">⇧${fmtNoComma(diff)}</div>`;
+  } else if (diff < 0) {
+    return `<div class="card-diff down">⇩${fmtNoComma(Math.abs(diff))}</div>`;
+  } else {
+    return `<div class="card-diff zero">±0</div>`;
+  }
+}
+
 let _rawData = null; // data.jsonの生データを保持
 
 async function init() {
@@ -708,7 +751,7 @@ function rerender() {
   if (!_rawData) return;
   // overridesを適用して再計算
   const accounts = applyOverrides(_rawData.accounts);
-  const { total, categories } = recalcCategories(accounts);
+  const { total, categories } = recalcCategories(accounts, _rawData.categories);
   const data = {
     ..._rawData,
     accounts,
@@ -742,7 +785,9 @@ function render(data) {
   positiveCats.forEach(c => {
     const col = catColor(c.name);
     const pct = data.total > 0 ? ((c.value / data.total) * 100).toFixed(1) : 0;
+    const diffHtml = renderDiffHtml(c.diff);
     catCards += `<div class="card" style="--card-color:${col}" data-cat="${c.name}">
+      ${diffHtml}
       <div class="card-label">${catLabel(c.name)}</div>
       <div class="card-row">
         <div class="card-value" style="color:${col}">${fmtNoComma(c.value)}<span style="font-size:0.6rem;color:var(--muted);margin-left:3px">万円</span></div>

@@ -106,22 +106,48 @@ def setup_browser():
     return browser
 
 # --- JSONビルド ---
-def build_json(accounts, updated_at):
+def build_json(accounts, updated_at, prev_data=None):
     cat_totals = {}
     for acc in accounts:
         cat = acc["category"]
         if cat != "-":
             cat_totals[cat] = cat_totals.get(cat, 0) + acc["value"]
     total = sum(cat_totals.values())
-    return {
+
+    # 前回のカテゴリ金額を辞書化
+    prev_cats = {}
+    prev_total = None
+    if prev_data:
+        for c in prev_data.get("categories", []):
+            prev_cats[c["name"]] = c["value"]
+        prev_total = prev_data.get("total")
+
+    categories = []
+    for k, v in sorted(cat_totals.items(), key=lambda x: -x[1]):
+        v_rounded = round(v)
+        entry = {"name": k, "value": v_rounded}
+        if k in prev_cats:
+            entry["diff"] = v_rounded - prev_cats[k]
+        categories.append(entry)
+
+    # 前回データに存在したが今回0になったカテゴリも差分として含める
+    for prev_name, prev_val in prev_cats.items():
+        if prev_name not in cat_totals:
+            categories.append({
+                "name": prev_name,
+                "value": 0,
+                "diff": 0 - prev_val
+            })
+
+    result = {
         "updated": updated_at,
         "total": round(total),
         "accounts": accounts,
-        "categories": [
-            {"name": k, "value": round(v)}
-            for k, v in sorted(cat_totals.items(), key=lambda x: -x[1])
-        ]
+        "categories": categories,
     }
+    if prev_total is not None:
+        result["total_diff"] = round(total) - prev_total
+    return result
 
 # --- メイン処理 ---
 def main():
@@ -192,11 +218,22 @@ def main():
             accounts.append({"name": m["name"], "value": m["value"], "category": m["category"]})
             print(f"  手動追加: {m['name']} {m['value']}万円 [{m['category']}]")
 
-        # 8. data.json出力
+        # 8. data.json出力（前回データを読み込んで差分を計算）
         now_str = datetime.now(ZoneInfo("Asia/Tokyo")).strftime('%Y/%m/%d %H:%M')
-        output = build_json(accounts, now_str)
+
+        prev_data = None
+        prev_path = "docs/data.json"
+        if os.path.exists(prev_path):
+            try:
+                with open(prev_path, "r", encoding="utf-8") as f:
+                    prev_data = json.load(f)
+                print(f"前回データを読み込みました（total={prev_data.get('total')}万円）")
+            except Exception as e:
+                print(f"前回データ読み込みエラー: {e}")
+
+        output = build_json(accounts, now_str, prev_data)
         os.makedirs("docs", exist_ok=True)
-        with open("docs/data.json", "w", encoding="utf-8") as f:
+        with open(prev_path, "w", encoding="utf-8") as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
         print(f"完了: docs/data.json 出力（総資産 {output['total']}万円）")
 
