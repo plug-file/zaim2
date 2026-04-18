@@ -50,6 +50,7 @@ ACCOUNT_CATEGORY = {
     "225投信":                "日本",
     "SPDR ゴールド":          "GLD",
     "SBI-EXE-i":              "サウス",
+    "iシェアーズ MSCI":       "サウス",
     "XYM":                    "暗号",
     "JPY (bitbank)":          "円",
     "CRYPTO (bitbank)":       "暗号",
