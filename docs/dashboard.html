@@ -729,7 +729,7 @@ function renderDiffHtml(diff) {
   } else if (diff < 0) {
     return `<div class="card-diff down">▼${fmtNoComma(Math.abs(diff))}万円</div>`;
   } else {
-    return `<div class="card-diff zero">±0万円</div>`;
+    return '';
   }
 }
 
