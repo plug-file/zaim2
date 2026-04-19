@@ -225,7 +225,10 @@ body {
   cursor: pointer;
   user-select: none;
 }
-.card:hover { border-color: var(--card-color); }
+@media (hover: hover) {
+  .card:hover { border-color: var(--card-color); }
+}
+.card:focus { outline: none; }
 .card.active { border-color: var(--card-color); background: var(--card-active-bg); }
 
 .card-label {
