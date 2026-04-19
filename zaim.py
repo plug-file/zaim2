@@ -81,14 +81,24 @@ def get_bitbank_balance():
         return 0, 0
     try:
         bb = ccxt.bitbank({'apiKey': BITBANK_API_KEY, 'secret': BITBANK_SECRET})
+        markets = bb.load_markets()  # 取引可能な全ペアを取得
         result = bb.fetch_balance()
         jpy = result['total'].get('JPY', 0)
         crypto_total = 0
-        for pair in ['BTC/JPY', 'XRP/JPY', 'ETH/JPY', 'XYM/JPY', 'GALA/JPY', 'SUI/JPY']:
-            sym = pair.split('/')[0]
-            amt = result['total'].get(sym, 0)
-            if amt > 0:
-                crypto_total += amt * bb.fetch_ticker(pair)['last']
+        # 残高があるコインをすべてチェック
+        for sym, amt in result['total'].items():
+            if sym == 'JPY' or not amt or amt <= 0:
+                continue
+            pair = f'{sym}/JPY'
+            if pair in markets:
+                try:
+                    price = bb.fetch_ticker(pair)['last']
+                    crypto_total += amt * price
+                    print(f"  bitbank {sym}: {amt} × {price} = {round(amt * price)}円")
+                except Exception as e:
+                    print(f"  bitbank {sym} 価格取得失敗: {e}")
+            else:
+                print(f"  bitbank {sym}: JPYペアなしスキップ (残高 {amt})")
         return jpy, crypto_total
     except Exception as e:
         print(f"Bitbankエラー: {e}")
