@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/21 13:39",
-  "total": 6403,
+  "updated": "2026/04/21 22:42",
+  "total": 6198,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -83,6 +83,16 @@
       "category": "サウス"
     },
     {
+      "name": "NTT",
+      "value": 77,
+      "category": "-"
+    },
+    {
+      "name": "任天堂",
+      "value": 84,
+      "category": "-"
+    },
+    {
       "name": "楽天",
       "value": 8,
       "category": "日本"
@@ -99,7 +109,7 @@
     },
     {
       "name": "現金残高等",
-      "value": 276,
+      "value": 115,
       "category": "円"
     },
     {
@@ -108,13 +118,8 @@
       "category": "ドル"
     },
     {
-      "name": "その他合計",
-      "value": 0,
-      "category": "ドル"
-    },
-    {
       "name": "JPY (bitbank)",
-      "value": 84,
+      "value": 15,
       "category": "円"
     },
     {
@@ -129,7 +134,7 @@
     },
     {
       "name": "BITGET",
-      "value": 25,
+      "value": 50,
       "category": "暗号"
     },
     {
@@ -146,33 +151,33 @@
   "categories": [
     {
       "name": "円",
-      "value": 2798,
-      "diff": -95
+      "value": 2568,
+      "diff": -230
     },
     {
       "name": "GLD",
       "value": 2184,
-      "diff": 23
+      "diff": 0
     },
     {
       "name": "VT",
       "value": 504,
-      "diff": 3
+      "diff": 0
     },
     {
       "name": "債券",
       "value": 396,
-      "diff": 1
+      "diff": 0
     },
     {
       "name": "暗号",
-      "value": 242,
-      "diff": 98
+      "value": 267,
+      "diff": 25
     },
     {
       "name": "サウス",
       "value": 166,
-      "diff": -2
+      "diff": 0
     },
     {
       "name": "ドル",
@@ -185,5 +190,5 @@
       "diff": 0
     }
   ],
-  "total_diff": 28
+  "total_diff": -205
 }
