@@ -1,10 +1,10 @@
 {
-  "updated": "2026/04/20 13:48",
-  "total": 6375,
+  "updated": "2026/04/21 13:39",
+  "total": 6403,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
-      "value": 361,
+      "value": 363,
       "category": "円"
     },
     {
@@ -19,7 +19,7 @@
     },
     {
       "name": "Kyash",
-      "value": 8,
+      "value": 7,
       "category": "-"
     },
     {
@@ -54,7 +54,7 @@
     },
     {
       "name": "楽天証券",
-      "value": 305,
+      "value": 307,
       "category": "VT"
     },
     {
@@ -69,17 +69,17 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 345,
+      "value": 346,
       "category": "債券"
     },
     {
       "name": "iシェアーズ MSCI ドイツ ETF",
-      "value": 90,
+      "value": 89,
       "category": "サウス"
     },
     {
       "name": "iシェアーズ MSCI ポーランド ETF",
-      "value": 78,
+      "value": 77,
       "category": "サウス"
     },
     {
@@ -89,7 +89,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 165,
+      "value": 166,
       "category": "VT"
     },
     {
@@ -114,17 +114,17 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 181,
+      "value": 84,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 119,
+      "value": 217,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2161,
+      "value": 2184,
       "category": "GLD"
     },
     {
@@ -146,33 +146,33 @@
   "categories": [
     {
       "name": "円",
-      "value": 2893,
-      "diff": 127
+      "value": 2798,
+      "diff": -95
     },
     {
       "name": "GLD",
-      "value": 2161,
-      "diff": -13
+      "value": 2184,
+      "diff": 23
     },
     {
       "name": "VT",
-      "value": 501,
-      "diff": 0
+      "value": 504,
+      "diff": 3
     },
     {
       "name": "債券",
-      "value": 395,
-      "diff": 0
-    },
-    {
-      "name": "サウス",
-      "value": 168,
-      "diff": 0
+      "value": 396,
+      "diff": 1
     },
     {
       "name": "暗号",
-      "value": 144,
-      "diff": -129
+      "value": 242,
+      "diff": 98
+    },
+    {
+      "name": "サウス",
+      "value": 166,
+      "diff": -2
     },
     {
       "name": "ドル",
@@ -185,5 +185,5 @@
       "diff": 0
     }
   ],
-  "total_diff": -15
+  "total_diff": 28
 }
