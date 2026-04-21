@@ -23,7 +23,7 @@ BITBANK_SECRET = os.environ.get("BITBANK_SECRET")
 # 形式: {"name": "口座名", "value": 金額(万円), "category": "カテゴリ"}
 # カテゴリ: 円, VT, ドル, 債券, GLD, 暗号, 日本, サウス, -
 MANUAL_ACCOUNTS = [
-    {"name": "BITGET",   "value": 25,  "category": "暗号"},
+    {"name": "BITGET",   "value": 50,  "category": "暗号"},
     {"name": "ロボプロ",  "value": 10,  "category": "VT"},
     {"name": "SBI FX",   "value": 100, "category": "ドル"},
 ]
