@@ -347,6 +347,67 @@ tr:hover td { background: var(--row-hover); }
   font-size: 0.6rem;
   margin-left: 4px;
 }
+/* ── 金額編集機能 ── */
+.val-badge {
+  cursor: pointer;
+  transition: transform 0.1s;
+  user-select: none;
+  display: inline-block;
+}
+.val-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+  border-radius: 3px;
+}
+.val-badge.val-overridden::after {
+  content: "✏️";
+  font-size: 0.6rem;
+  margin-left: 4px;
+}
+.val-input {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.92rem;
+  width: 80px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 2px solid var(--accent);
+  background: var(--select-bg);
+  color: var(--text);
+  text-align: right;
+  outline: none;
+}
+.val-input-unit {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-left: 3px;
+}
+.val-input-actions {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 6px;
+}
+.val-input-actions button {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.val-input-actions button.save {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.val-input-actions button.restore {
+  border-color: var(--muted);
+  color: var(--muted);
+  font-size: 0.6rem;
+}
 .cat-select {
   font-family: var(--font);
   font-weight: 700;
@@ -508,6 +569,7 @@ const DEFAULT_COLOR = "#6b7280";
 
 // ── カテゴリ上書き管理（localStorage） ──
 const STORAGE_KEY = "zaim2_category_overrides";
+const VALUE_STORAGE_KEY = "zaim2_value_overrides";
 
 function loadOverrides() {
   try {
@@ -531,13 +593,47 @@ function setOverride(name, category) {
   saveOverrides(ov);
 }
 
+// ── 金額上書き管理（localStorage） ──
+function loadValueOverrides() {
+  try {
+    return JSON.parse(localStorage.getItem(VALUE_STORAGE_KEY) || "{}");
+  } catch(e) {
+    return {};
+  }
+}
+
+function saveValueOverrides(obj) {
+  localStorage.setItem(VALUE_STORAGE_KEY, JSON.stringify(obj));
+}
+
+function setValueOverride(name, value) {
+  const ov = loadValueOverrides();
+  if (value === null) {
+    delete ov[name];
+  } else {
+    ov[name] = value;
+  }
+  saveValueOverrides(ov);
+}
+
 function applyOverrides(accounts) {
-  const ov = loadOverrides();
+  const catOv = loadOverrides();
+  const valOv = loadValueOverrides();
   return accounts.map(a => {
-    if (ov.hasOwnProperty(a.name)) {
-      return { ...a, category: ov[a.name], _overridden: true };
+    let modified = a;
+    let overridden = false;
+    if (catOv.hasOwnProperty(a.name)) {
+      modified = { ...modified, category: catOv[a.name] };
+      overridden = true;
     }
-    return a;
+    if (valOv.hasOwnProperty(a.name)) {
+      modified = { ...modified, value: valOv[a.name] };
+      overridden = true;
+    }
+    if (overridden) {
+      modified._overridden = true;
+    }
+    return modified;
   });
 }
 
@@ -690,25 +786,30 @@ function makeDoughnut(id, items, total) {
 
 function makeAllTable(items, total) {
   let rows = '';
+  const valOv = loadValueOverrides();
   items.filter(i => i.value !== 0).forEach(i => {
     const cat = i.category && i.category !== '-' ? i.category : '';
     const col = cat ? catColor(cat) : DEFAULT_COLOR;
     const isNeg = i.value < 0;
     const overrideClass = i._overridden ? ' overridden' : '';
+    const valOverridden = valOv.hasOwnProperty(i.name);
+    const valOverClass = valOverridden ? ' val-overridden' : '';
     const catCell = cat
       ? `<td><span class="badge${overrideClass}" data-name="${escapeHtml(i.name)}" data-cat="${cat}" style="background:${col}15;color:${col}">${catLabel(cat)}</span></td>`
       : `<td><span class="badge${overrideClass}" data-name="${escapeHtml(i.name)}" data-cat="" style="background:var(--empty-badge-bg);color:var(--empty-badge-text)">—</span></td>`;
     rows += `<tr data-category="${cat}">
       <td class="name">${i.name}</td>
       ${catCell}
-      <td class="r ${isNeg?'neg':''}">${isNeg?'−':''}${fmtNoComma(Math.abs(i.value))}<span style="font-size:0.65rem;color:var(--muted);margin-left:3px">万円</span></td>
+      <td class="r ${isNeg?'neg':''}"><span class="val-badge${valOverClass}" data-name="${escapeHtml(i.name)}" data-value="${i.value}">${isNeg?'−':''}${fmtNoComma(Math.abs(i.value))}<span style="font-size:0.65rem;color:var(--muted);margin-left:3px">万円</span></span></td>
     </tr>`;
   });
 
-  const overrideCount = Object.keys(loadOverrides()).length;
+  const catOvCount = Object.keys(loadOverrides()).length;
+  const valOvCount = Object.keys(valOv).length;
+  const totalOvCount = catOvCount + valOvCount;
   const toolbar = `<div class="edit-toolbar">
-    <span class="hint">💡 カテゴリをタップで変更${overrideCount>0?` ・ ${overrideCount}件上書き中`:''}</span>
-    ${overrideCount>0?'<button id="btn-reset-overrides" class="danger">すべてリセット</button>':''}
+    <span class="hint">💡 カテゴリ・金額をタップで変更${totalOvCount>0?` ・ ${totalOvCount}件上書き中`:''}</span>
+    ${totalOvCount>0?'<button id="btn-reset-overrides" class="danger">すべてリセット</button>':''}
   </div>`;
 
   return `<div class="table-wrap">
@@ -881,12 +982,23 @@ function render(data) {
       });
     });
 
+    // ── 金額バッジクリック → インライン編集 ──
+    document.querySelectorAll('.val-badge[data-name]').forEach(valBadge => {
+      valBadge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const name = valBadge.dataset.name;
+        const currentVal = parseFloat(valBadge.dataset.value);
+        showValueEditor(valBadge, name, currentVal);
+      });
+    });
+
     // ── リセットボタン ──
     const resetBtn = document.getElementById('btn-reset-overrides');
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
-        if (confirm('すべてのカテゴリ上書き設定をリセットしますか？')) {
+        if (confirm('すべての上書き設定（カテゴリ・金額）をリセットしますか？')) {
           localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(VALUE_STORAGE_KEY);
           rerender();
         }
       });
@@ -943,6 +1055,97 @@ function showCategoryPicker(badgeEl, name, currentCat) {
   });
 
   select.addEventListener('blur', cleanup);
+}
+
+// ── インライン金額編集 ──
+function showValueEditor(valBadgeEl, name, currentVal) {
+  // 既に開いているエディタがあれば閉じる
+  const existing = document.querySelector('.val-edit-wrap');
+  if (existing) existing.remove();
+
+  const wrap = document.createElement('span');
+  wrap.className = 'val-edit-wrap';
+
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'val-input';
+  input.value = currentVal;
+  input.step = '1';
+
+  const unitSpan = document.createElement('span');
+  unitSpan.className = 'val-input-unit';
+  unitSpan.textContent = '万円';
+
+  const actions = document.createElement('span');
+  actions.className = 'val-input-actions';
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'save';
+  saveBtn.textContent = '✓';
+
+  const valOv = loadValueOverrides();
+  const hasOverride = valOv.hasOwnProperty(name);
+
+  actions.appendChild(saveBtn);
+
+  if (hasOverride) {
+    const restoreBtn = document.createElement('button');
+    restoreBtn.className = 'restore';
+    restoreBtn.textContent = '↺ 戻す';
+    actions.appendChild(restoreBtn);
+    restoreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setValueOverride(name, null);
+      cleanup();
+      rerender();
+    });
+  }
+
+  wrap.appendChild(input);
+  wrap.appendChild(unitSpan);
+  wrap.appendChild(actions);
+
+  valBadgeEl.style.display = 'none';
+  valBadgeEl.parentNode.appendChild(wrap);
+  input.focus();
+  input.select();
+
+  const cleanup = () => {
+    wrap.remove();
+    valBadgeEl.style.display = '';
+  };
+
+  const doSave = () => {
+    const newVal = parseFloat(input.value);
+    if (!isNaN(newVal)) {
+      setValueOverride(name, Math.round(newVal));
+      cleanup();
+      rerender();
+    } else {
+      cleanup();
+    }
+  };
+
+  saveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    doSave();
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); doSave(); }
+    if (e.key === 'Escape') { e.preventDefault(); cleanup(); }
+  });
+
+  // クリック外で閉じる（少し遅延させてイベント伝播を防ぐ）
+  setTimeout(() => {
+    const onClickOutside = (e) => {
+      if (!wrap.contains(e.target)) {
+        cleanup();
+        document.removeEventListener('click', onClickOutside, true);
+      }
+    };
+    document.addEventListener('click', onClickOutside, true);
+  }, 10);
 }
 
 // テーマ切替ボタンの初期化
