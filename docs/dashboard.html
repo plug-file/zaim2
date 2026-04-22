@@ -953,7 +953,8 @@ function render(data) {
   let activeFilter = null;
   setTimeout(() => {
     document.querySelectorAll('.card[data-cat]').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
         const cat = card.dataset.cat;
         if (activeFilter === cat) {
           // Deselect
@@ -970,6 +971,15 @@ function render(data) {
           });
         }
       });
+    });
+
+    // ── カード外タップでフィルター解除 ──
+    document.addEventListener('click', () => {
+      if (activeFilter !== null) {
+        activeFilter = null;
+        document.querySelectorAll('.card[data-cat]').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('table tbody tr').forEach(tr => tr.style.display = '');
+      }
     });
 
     // ── バッジクリック → プルダウン表示 ──
