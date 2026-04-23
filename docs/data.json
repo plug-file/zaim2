@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/22 13:36",
-  "total": 6166,
+  "updated": "2026/04/23 13:41",
+  "total": 6173,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -54,7 +54,7 @@
     },
     {
       "name": "楽天証券",
-      "value": 307,
+      "value": 306,
       "category": "VT"
     },
     {
@@ -74,12 +74,12 @@
     },
     {
       "name": "iシェアーズ MSCI ドイツ ETF",
-      "value": 87,
+      "value": 88,
       "category": "サウス"
     },
     {
       "name": "iシェアーズ MSCI ポーランド ETF",
-      "value": 75,
+      "value": 76,
       "category": "サウス"
     },
     {
@@ -99,7 +99,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 166,
+      "value": 165,
       "category": "VT"
     },
     {
@@ -134,7 +134,7 @@
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2152,
+      "value": 2159,
       "category": "GLD"
     },
     {
@@ -161,13 +161,13 @@
     },
     {
       "name": "GLD",
-      "value": 2152,
-      "diff": -32
+      "value": 2159,
+      "diff": 7
     },
     {
       "name": "VT",
-      "value": 504,
-      "diff": 0
+      "value": 502,
+      "diff": -2
     },
     {
       "name": "債券",
@@ -177,12 +177,12 @@
     {
       "name": "暗号",
       "value": 271,
-      "diff": 4
+      "diff": 0
     },
     {
       "name": "サウス",
-      "value": 162,
-      "diff": -4
+      "value": 164,
+      "diff": 2
     },
     {
       "name": "ドル",
@@ -195,5 +195,5 @@
       "diff": 0
     }
   ],
-  "total_diff": -32
+  "total_diff": 7
 }
