@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/23 13:41",
-  "total": 6173,
+  "updated": "2026/04/24 13:45",
+  "total": 6155,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -49,12 +49,12 @@
     },
     {
       "name": "SBI 証券",
-      "value": 637,
+      "value": 634,
       "category": "-"
     },
     {
       "name": "楽天証券",
-      "value": 306,
+      "value": 308,
       "category": "VT"
     },
     {
@@ -69,17 +69,17 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 346,
+      "value": 345,
       "category": "債券"
     },
     {
       "name": "iシェアーズ MSCI ドイツ ETF",
-      "value": 88,
+      "value": 87,
       "category": "サウス"
     },
     {
       "name": "iシェアーズ MSCI ポーランド ETF",
-      "value": 76,
+      "value": 74,
       "category": "サウス"
     },
     {
@@ -89,7 +89,7 @@
     },
     {
       "name": "任天堂",
-      "value": 84,
+      "value": 82,
       "category": "-"
     },
     {
@@ -99,7 +99,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 165,
+      "value": 166,
       "category": "VT"
     },
     {
@@ -129,12 +129,12 @@
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 221,
+      "value": 222,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2159,
+      "value": 2141,
       "category": "GLD"
     },
     {
@@ -161,28 +161,28 @@
     },
     {
       "name": "GLD",
-      "value": 2159,
-      "diff": 7
+      "value": 2141,
+      "diff": -18
     },
     {
       "name": "VT",
-      "value": 502,
-      "diff": -2
+      "value": 505,
+      "diff": 3
     },
     {
       "name": "債券",
-      "value": 396,
-      "diff": 0
+      "value": 395,
+      "diff": -1
     },
     {
       "name": "暗号",
-      "value": 271,
-      "diff": 0
+      "value": 272,
+      "diff": 1
     },
     {
       "name": "サウス",
-      "value": 164,
-      "diff": 2
+      "value": 161,
+      "diff": -3
     },
     {
       "name": "ドル",
@@ -195,5 +195,5 @@
       "diff": 0
     }
   ],
-  "total_diff": 7
+  "total_diff": -18
 }
