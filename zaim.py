@@ -118,7 +118,6 @@ def setup_browser():
 def login_zaim(browser):
     wait = WebDriverWait(browser, 20)
 
-    # ログインページに直接アクセス
     browser.get('https://id.zaim.net')
     time.sleep(3)
     print(f"ログインページURL: {browser.current_url}")
@@ -140,25 +139,53 @@ def login_zaim(browser):
     pw_field.send_keys(PASSWORD)
     print("パスワード入力完了")
 
-    # ログインボタンクリック（「ログイン」テキストのボタン）
-    login_btn = wait.until(EC.element_to_be_clickable(
-        (By.XPATH, "//button[contains(text(), 'ログイン')]")
-    ))
-    browser.execute_script("arguments[0].click();", login_btn)
-    print("ログインボタンをクリックしました")
+    # ページ上のボタン情報をデバッグ出力
+    buttons = browser.find_elements(By.TAG_NAME, "button")
+    print(f"ページ上のボタン数: {len(buttons)}")
+    for i, btn in enumerate(buttons):
+        print(f"  ボタン[{i}]: text='{btn.text}' type='{btn.get_attribute('type')}' class='{btn.get_attribute('class')}'")
 
-    # zaim.net/home へのリダイレクトを待機
-    try:
-        WebDriverWait(browser, 20).until(EC.url_contains("zaim.net/home"))
-        print(f"ログイン成功: {browser.current_url}")
-    except:
-        print(f"リダイレクト待機タイムアウト。現在URL: {browser.current_url}")
+    # ログインボタンを複数パターンで試みる
+    btn_selectors = [
+        (By.CSS_SELECTOR, "button[type='submit']"),
+        (By.CSS_SELECTOR, "input[type='submit']"),
+        (By.XPATH, "//button[@type='submit']"),
+        (By.XPATH, "//button[normalize-space()='ログイン']"),
+        (By.XPATH, "//button[contains(., 'ログイン')]"),
+        (By.XPATH, "(//button)[last()]"),  # 最後のボタン（Apple/Googleの次）
+    ]
+
+    clicked = False
+    for by, selector in btn_selectors:
+        try:
+            btn = browser.find_element(by, selector)
+            print(f"ボタン発見: {by}='{selector}' text='{btn.text}'")
+            browser.execute_script("arguments[0].scrollIntoView(true);", btn)
+            time.sleep(0.5)
+            browser.execute_script("arguments[0].click();", btn)
+            print(f"クリック成功: {by}='{selector}'")
+            clicked = True
+            break
+        except Exception as e:
+            print(f"  失敗: {by}='{selector}' → {e}")
+            continue
+
+    if not clicked:
+        # 最終手段：パスワード欄でEnterキー
+        print("ボタンクリック失敗。Enterキーで送信を試みます")
+        from selenium.webdriver.common.keys import Keys
+        pw_field.send_keys(Keys.RETURN)
+        print("Enterキー送信完了")
+
+    time.sleep(5)
+    print(f"ログイン後URL: {browser.current_url}")
+
+    # ログイン失敗チェック
+    if "id.zaim.net" in browser.current_url:
         browser.save_screenshot("debug_after_login.png")
-        # ログイン失敗チェック
-        if "id.zaim.net" in browser.current_url:
-            raise Exception("ログインに失敗しました。メールアドレス・パスワードを確認してください。")
+        raise Exception(f"ログインに失敗しました。現在URL: {browser.current_url}")
 
-    time.sleep(3)
+    print("ログイン成功")
 
 # --- JSONビルド ---
 def build_json(accounts, updated_at, prev_data=None):
