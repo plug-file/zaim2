@@ -1,7 +1,117 @@
 {
-  "updated": "2026/04/25 22:00",
-  "total": 2543,
+  "updated": "2026/04/25 22:11",
+  "total": 6318,
   "accounts": [
+    {
+      "name": "住信 SBI ネット銀行 代...",
+      "value": 363,
+      "category": "円"
+    },
+    {
+      "name": "楽天銀行 サンバ支店 普...",
+      "value": 75,
+      "category": "円"
+    },
+    {
+      "name": "リクルートカード(MUFG...",
+      "value": -42,
+      "category": "-"
+    },
+    {
+      "name": "Kyash",
+      "value": 6,
+      "category": "-"
+    },
+    {
+      "name": "楽天カード(Visa) XXXX...",
+      "value": -31,
+      "category": "-"
+    },
+    {
+      "name": "住信 SBI ネット銀行 定...",
+      "value": 2000,
+      "category": "円"
+    },
+    {
+      "name": "三井住友カード Amazon...",
+      "value": -3,
+      "category": "-"
+    },
+    {
+      "name": "三井住友カード Olive",
+      "value": -23,
+      "category": "-"
+    },
+    {
+      "name": "三井住友銀行 オリーブ...",
+      "value": 40,
+      "category": "-"
+    },
+    {
+      "name": "SBI 証券",
+      "value": 633,
+      "category": "-"
+    },
+    {
+      "name": "楽天証券",
+      "value": 308,
+      "category": "VT"
+    },
+    {
+      "name": "三菱 UFJ e スマート証券",
+      "value": 30,
+      "category": "債券"
+    },
+    {
+      "name": "マネックス証券",
+      "value": 20,
+      "category": "債券"
+    },
+    {
+      "name": "確定拠出年金（JIST）",
+      "value": 345,
+      "category": "債券"
+    },
+    {
+      "name": "iシェアーズ MSCI ドイツ ETF",
+      "value": 88,
+      "category": "サウス"
+    },
+    {
+      "name": "iシェアーズ MSCI ポーランド ETF",
+      "value": 75,
+      "category": "サウス"
+    },
+    {
+      "name": "楽天",
+      "value": 8,
+      "category": "日本"
+    },
+    {
+      "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
+      "value": 166,
+      "category": "VT"
+    },
+    {
+      "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
+      "value": 21,
+      "category": "VT"
+    },
+    {
+      "name": "現金残高等",
+      "value": 271,
+      "category": "円"
+    },
+    {
+      "name": "米ドル現金",
+      "value": 5,
+      "category": "ドル"
+    },
+    {
+      "name": "その他合計",
+      "value": 0,
+      "category": "ドル"
+    },
     {
       "name": "JPY (bitbank)",
       "value": 26,
@@ -35,45 +145,45 @@
   ],
   "categories": [
     {
+      "name": "円",
+      "value": 2735,
+      "diff": 2709
+    },
+    {
       "name": "GLD",
       "value": 2141,
       "diff": 0
     },
     {
-      "name": "暗号",
-      "value": 266,
-      "diff": -6
-    },
-    {
-      "name": "ドル",
-      "value": 100,
-      "diff": -5
-    },
-    {
-      "name": "円",
-      "value": 26,
-      "diff": -2542
-    },
-    {
       "name": "VT",
-      "value": 10,
-      "diff": -495
+      "value": 505,
+      "diff": 495
     },
     {
       "name": "債券",
-      "value": 0,
-      "diff": -395
+      "value": 395,
+      "diff": 395
+    },
+    {
+      "name": "暗号",
+      "value": 266,
+      "diff": 0
     },
     {
       "name": "サウス",
-      "value": 0,
-      "diff": -161
+      "value": 163,
+      "diff": 163
+    },
+    {
+      "name": "ドル",
+      "value": 105,
+      "diff": 5
     },
     {
       "name": "日本",
-      "value": 0,
-      "diff": -8
+      "value": 8,
+      "diff": 8
     }
   ],
-  "total_diff": -3612
+  "total_diff": 3775
 }
