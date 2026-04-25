@@ -114,7 +114,7 @@ def setup_browser():
     browser.implicitly_wait(10)
     return browser
 
-# --- くふう Zaim ログイン（id.zaim.net） ---
+# --- くふう Zaim ログイン ---
 def login_zaim(browser):
     wait = WebDriverWait(browser, 20)
 
@@ -139,49 +139,31 @@ def login_zaim(browser):
     pw_field.send_keys(PASSWORD)
     print("パスワード入力完了")
 
-    # ページ上のボタン情報をデバッグ出力
-    buttons = browser.find_elements(By.TAG_NAME, "button")
-    print(f"ページ上のボタン数: {len(buttons)}")
-    for i, btn in enumerate(buttons):
-        print(f"  ボタン[{i}]: text='{btn.text}' type='{btn.get_attribute('type')}' class='{btn.get_attribute('class')}'")
+    # ログインボタンクリック
+    btn = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+    browser.execute_script("arguments[0].click();", btn)
+    print("ログインボタンをクリックしました")
 
-    # ログインボタンを複数パターンで試みる
-    btn_selectors = [
-        (By.CSS_SELECTOR, "button[type='submit']"),
-        (By.CSS_SELECTOR, "input[type='submit']"),
-        (By.XPATH, "//button[@type='submit']"),
-        (By.XPATH, "//button[normalize-space()='ログイン']"),
-        (By.XPATH, "//button[contains(., 'ログイン')]"),
-        (By.XPATH, "(//button)[last()]"),  # 最後のボタン（Apple/Googleの次）
-    ]
-
-    clicked = False
-    for by, selector in btn_selectors:
-        try:
-            btn = browser.find_element(by, selector)
-            print(f"ボタン発見: {by}='{selector}' text='{btn.text}'")
-            browser.execute_script("arguments[0].scrollIntoView(true);", btn)
-            time.sleep(0.5)
-            browser.execute_script("arguments[0].click();", btn)
-            print(f"クリック成功: {by}='{selector}'")
-            clicked = True
+    # SSOリダイレクトを経てzaim.netに到達するまで待機（最大30秒）
+    print("SSO認証・リダイレクト待機中...")
+    for i in range(30):
+        time.sleep(1)
+        current = browser.current_url
+        print(f"  [{i+1}s] URL: {current}")
+        if "zaim.net" in current and "id.zaim.net" not in current and "id.kufu.jp" not in current:
+            print(f"zaim.netへのリダイレクト完了: {current}")
             break
-        except Exception as e:
-            print(f"  失敗: {by}='{selector}' → {e}")
-            continue
+    else:
+        print(f"警告: 30秒待機後のURL: {browser.current_url}")
 
-    if not clicked:
-        # 最終手段：パスワード欄でEnterキー
-        print("ボタンクリック失敗。Enterキーで送信を試みます")
-        from selenium.webdriver.common.keys import Keys
-        pw_field.send_keys(Keys.RETURN)
-        print("Enterキー送信完了")
-
+    # zaim.net/homeに強制移動
+    print("zaim.net/homeに移動します")
+    browser.get('https://zaim.net/home')
     time.sleep(5)
-    print(f"ログイン後URL: {browser.current_url}")
+    print(f"最終URL: {browser.current_url}")
 
-    # ログイン失敗チェック
-    if "id.zaim.net" in browser.current_url:
+    # ログイン状態確認（まだログインページにいる場合は失敗）
+    if "id.zaim.net" in browser.current_url or "id.kufu.jp" in browser.current_url:
         browser.save_screenshot("debug_after_login.png")
         raise Exception(f"ログインに失敗しました。現在URL: {browser.current_url}")
 
@@ -250,17 +232,24 @@ def main():
 
         # 3. ホーム画面から口座残高取得
         browser.get('https://zaim.net/home')
+        time.sleep(5)
+        print(f"ホーム画面URL: {browser.current_url}")
+
         names  = [e.text for e in browser.find_elements(By.XPATH, "//div[@class='name']")]
         values = [e.text.replace('¥', '').replace(',', '') for e in browser.find_elements(By.XPATH, "//div[contains(@class, 'value')]")]
+        print(f"取得した口座名数: {len(names)}, 残高数: {len(values)}")
+
         for name, val in zip(names, values):
             try:
                 val_man = round(int(val) / 10000)
             except:
                 continue
             accounts.append({"name": name, "value": val_man, "category": categorize(name)})
+            print(f"  口座: {name} → {val_man}万円")
 
         # 4. 証券ページ詳細取得
         browser.get('https://zaim.net/securities/7547235')
+        time.sleep(5)
         for table in browser.find_elements(By.CLASS_NAME, "table"):
             for row in table.find_elements(By.TAG_NAME, "tr")[1:]:
                 cols = row.find_elements(By.TAG_NAME, "td")
@@ -275,6 +264,7 @@ def main():
                 except:
                     continue
                 accounts.append({"name": name, "value": val_man, "category": categorize(name)})
+                print(f"  証券: {name} → {val_man}万円")
 
         # 5. bitbank残高
         jpy, crypto = get_bitbank_balance()
