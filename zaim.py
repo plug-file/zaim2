@@ -169,9 +169,21 @@ def main():
         # 1. Zaimログイン
         print("Zaimにログイン中...")
         browser.get('https://zaim.net/home')
-        browser.find_element(By.NAME, "email").send_keys(EMAIL)
+
+        # メールアドレス入力欄が表示されるまで待機
+        wait = WebDriverWait(browser, 20)
+        wait.until(EC.presence_of_element_located((By.NAME, "email"))).send_keys(EMAIL)
         browser.find_element(By.NAME, "password").send_keys(PASSWORD)
-        browser.find_element(By.ID, "submit").click()
+
+        # submitボタンがクリック可能になるまで待機してからクリック
+        wait.until(EC.element_to_be_clickable((By.ID, "submit"))).click()
+        print("ログインボタンをクリックしました")
+
+        # ログイン後のページ遷移を待機（ホーム画面の特定要素が出るまで）
+        try:
+            wait.until(EC.url_contains("/home"))
+        except:
+            pass
         time.sleep(3)
 
         # 2. 更新ボタン押下
