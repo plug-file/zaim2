@@ -118,23 +118,23 @@ def setup_browser():
 def login_zaim(browser):
     wait = WebDriverWait(browser, 20)
 
-    browser.get('https://id.zaim.net')
+    # zaim.net/homeにアクセス → 自動的にid.zaim.net or id.kufu.jpにリダイレクトされる
+    browser.get('https://zaim.net/home')
     time.sleep(3)
-    print(f"ログインページURL: {browser.current_url}")
+    print(f"初期アクセス後URL: {browser.current_url}")
     print(f"ページタイトル: {browser.title}")
 
-    # メールアドレス入力
+    # ログインフォームが表示されるまで待機
     email_field = wait.until(EC.presence_of_element_located(
-        (By.CSS_SELECTOR, "input[placeholder='登録したメールアドレス'], input[type='email'], input[name='email']")
+        (By.CSS_SELECTOR, "input[type='email'], input[name='email'], input[placeholder*='メールアドレス']")
     ))
     email_field.clear()
     email_field.send_keys(EMAIL)
     print("メールアドレス入力完了")
 
-    # パスワード入力
-    pw_field = wait.until(EC.presence_of_element_located(
-        (By.CSS_SELECTOR, "input[placeholder='登録したパスワード'], input[type='password']")
-    ))
+    pw_field = browser.find_element(
+        By.CSS_SELECTOR, "input[type='password'], input[placeholder*='パスワード']"
+    )
     pw_field.clear()
     pw_field.send_keys(PASSWORD)
     print("パスワード入力完了")
@@ -144,30 +144,19 @@ def login_zaim(browser):
     browser.execute_script("arguments[0].click();", btn)
     print("ログインボタンをクリックしました")
 
-    # SSOリダイレクトを経てzaim.netに到達するまで待機（最大30秒）
-    print("SSO認証・リダイレクト待機中...")
-    for i in range(30):
-        time.sleep(1)
-        current = browser.current_url
-        print(f"  [{i+1}s] URL: {current}")
-        if "zaim.net" in current and "id.zaim.net" not in current and "id.kufu.jp" not in current:
-            print(f"zaim.netへのリダイレクト完了: {current}")
-            break
-    else:
-        print(f"警告: 30秒待機後のURL: {browser.current_url}")
-
-    # zaim.net/homeに強制移動
-    print("zaim.net/homeに移動します")
-    browser.get('https://zaim.net/home')
-    time.sleep(5)
-    print(f"最終URL: {browser.current_url}")
-
-    # ログイン状態確認（まだログインページにいる場合は失敗）
-    if "id.zaim.net" in browser.current_url or "id.kufu.jp" in browser.current_url:
+    # SSOリダイレクトが完全に完了してzaim.net/homeに到達するまで待機（最大60秒）
+    print("SSO完了・zaim.net/homeへのリダイレクト待機中...")
+    try:
+        WebDriverWait(browser, 60).until(
+            lambda d: "zaim.net/home" in d.current_url and "id." not in d.current_url
+        )
+        print(f"ログイン成功: {browser.current_url}")
+    except Exception as e:
+        print(f"タイムアウト。現在URL: {browser.current_url}")
         browser.save_screenshot("debug_after_login.png")
-        raise Exception(f"ログインに失敗しました。現在URL: {browser.current_url}")
+        raise Exception(f"ログイン失敗: {browser.current_url}")
 
-    print("ログイン成功")
+    time.sleep(3)
 
 # --- JSONビルド ---
 def build_json(accounts, updated_at, prev_data=None):
