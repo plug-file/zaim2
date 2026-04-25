@@ -106,13 +106,80 @@ def setup_browser():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1920,1080')
-    options.add_argument('--disable-blink-features=AutomationControlled')  # bot検知回避
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])  # bot検知回避
-    options.add_experimental_option('useAutomationExtension', False)          # bot検知回避
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
     browser = webdriver.Chrome(options=options)
     browser.implicitly_wait(10)
     return browser
+
+# --- くふうアカウントでログイン ---
+def login_zaim(browser):
+    wait = WebDriverWait(browser, 20)
+
+    browser.get('https://zaim.net/users/login')
+    time.sleep(3)
+    print(f"リダイレクト後URL: {browser.current_url}")
+    print(f"ページタイトル: {browser.title}")
+
+    # くふうアカウントのログインフォームに対応
+    # メールアドレス入力（type="email" または name="email" または id="email"）
+    try:
+        email_field = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email'], input[name='email'], input[id='email']")))
+        email_field.clear()
+        email_field.send_keys(EMAIL)
+        print("メールアドレス入力完了")
+    except Exception as e:
+        print(f"メール入力欄が見つかりません: {e}")
+        browser.save_screenshot("debug_email.png")
+        raise
+
+    # パスワード入力
+    try:
+        pw_field = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='password']")))
+        pw_field.clear()
+        pw_field.send_keys(PASSWORD)
+        print("パスワード入力完了")
+    except Exception as e:
+        print(f"パスワード入力欄が見つかりません: {e}")
+        browser.save_screenshot("debug_password.png")
+        raise
+
+    # ログインボタンクリック（複数パターンを試みる）
+    btn_selectors = [
+        (By.ID, "submit"),
+        (By.CSS_SELECTOR, "button[type='submit']"),
+        (By.CSS_SELECTOR, "input[type='submit']"),
+        (By.XPATH, "//button[contains(text(), 'ログイン')]"),
+        (By.XPATH, "//button[contains(text(), 'サインイン')]"),
+        (By.XPATH, "//input[@type='submit']"),
+    ]
+    clicked = False
+    for by, selector in btn_selectors:
+        try:
+            btn = browser.find_element(by, selector)
+            browser.execute_script("arguments[0].click();", btn)
+            print(f"ログインボタンクリック成功: {by}='{selector}'")
+            clicked = True
+            break
+        except:
+            continue
+
+    if not clicked:
+        print("ログインボタンが見つかりません。スクリーンショットを保存します")
+        browser.save_screenshot("debug_no_button.png")
+        raise Exception("ログインボタンが見つかりませんでした")
+
+    time.sleep(5)
+    print(f"ログイン後URL: {browser.current_url}")
+
+    # ログイン失敗チェック（まだログインページにいる場合）
+    if "login" in browser.current_url or "signin" in browser.current_url:
+        browser.save_screenshot("debug_login_failed.png")
+        raise Exception(f"ログインに失敗した可能性があります。現在URL: {browser.current_url}")
+
+    print("ログイン成功")
 
 # --- JSONビルド ---
 def build_json(accounts, updated_at, prev_data=None):
@@ -164,26 +231,7 @@ def main():
     try:
         # 1. Zaimログイン
         print("Zaimにログイン中...")
-        browser.get('https://zaim.net/users/login')  # ログインページに直接アクセス
-        print(f"アクセスURL: {browser.current_url}")
-        print(f"ページタイトル: {browser.title}")
-
-        wait = WebDriverWait(browser, 20)
-
-        # メールアドレス入力
-        email_field = wait.until(EC.presence_of_element_located((By.NAME, "email")))
-        email_field.send_keys(EMAIL)
-
-        # パスワード入力
-        browser.find_element(By.NAME, "password").send_keys(PASSWORD)
-
-        # submitボタンをJavaScriptでクリック（bot検知回避）
-        submit_btn = wait.until(EC.presence_of_element_located((By.ID, "submit")))
-        browser.execute_script("arguments[0].click();", submit_btn)
-        print("ログインボタンをクリックしました")
-
-        time.sleep(5)
-        print(f"ログイン後URL: {browser.current_url}")
+        login_zaim(browser)
 
         # 2. 更新ボタン押下
         try:
