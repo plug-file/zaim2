@@ -19,6 +19,9 @@ BITBANK_API_KEY = os.environ.get("BITBANK_API_KEY")
 BITBANK_SECRET = os.environ.get("BITBANK_SECRET")
 
 # --- 手動入力項目（万円単位） ---
+# Zaimで自動取得できない資産をここに追加してください
+# 形式: {"name": "口座名", "value": 金額(万円), "category": "カテゴリ"}
+# カテゴリ: 円, VT, ドル, 債券, GLD, 暗号, 日本, サウス, -
 MANUAL_ACCOUNTS = [
     {"name": "BITGET",   "value": 50,  "category": "暗号"},
     {"name": "ロボプロ",  "value": 10,  "category": "VT"},
@@ -26,6 +29,7 @@ MANUAL_ACCOUNTS = [
 ]
 
 # --- 口座名 → カテゴリ のマッピング ---
+# Zaimの口座名の一部に合わせて編集してください
 ACCOUNT_CATEGORY = {
     "住信 SBI ネット銀行 代": "円",
     "住信 SBI ネット銀行 定": "円",
@@ -77,10 +81,11 @@ def get_bitbank_balance():
         return 0, 0
     try:
         bb = ccxt.bitbank({'apiKey': BITBANK_API_KEY, 'secret': BITBANK_SECRET})
-        markets = bb.load_markets()
+        markets = bb.load_markets()  # 取引可能な全ペアを取得
         result = bb.fetch_balance()
         jpy = result['total'].get('JPY', 0)
         crypto_total = 0
+        # 残高があるコインをすべてチェック
         for sym, amt in result['total'].items():
             if sym == 'JPY' or not amt or amt <= 0:
                 continue
@@ -106,80 +111,10 @@ def setup_browser():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1920,1080')
-    options.add_argument('--disable-blink-features=AutomationControlled')
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option('useAutomationExtension', False)
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
     browser = webdriver.Chrome(options=options)
     browser.implicitly_wait(10)
     return browser
-
-# --- くふうアカウントでログイン ---
-def login_zaim(browser):
-    wait = WebDriverWait(browser, 20)
-
-    browser.get('https://zaim.net/users/login')
-    time.sleep(3)
-    print(f"リダイレクト後URL: {browser.current_url}")
-    print(f"ページタイトル: {browser.title}")
-
-    # くふうアカウントのログインフォームに対応
-    # メールアドレス入力（type="email" または name="email" または id="email"）
-    try:
-        email_field = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email'], input[name='email'], input[id='email']")))
-        email_field.clear()
-        email_field.send_keys(EMAIL)
-        print("メールアドレス入力完了")
-    except Exception as e:
-        print(f"メール入力欄が見つかりません: {e}")
-        browser.save_screenshot("debug_email.png")
-        raise
-
-    # パスワード入力
-    try:
-        pw_field = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='password']")))
-        pw_field.clear()
-        pw_field.send_keys(PASSWORD)
-        print("パスワード入力完了")
-    except Exception as e:
-        print(f"パスワード入力欄が見つかりません: {e}")
-        browser.save_screenshot("debug_password.png")
-        raise
-
-    # ログインボタンクリック（複数パターンを試みる）
-    btn_selectors = [
-        (By.ID, "submit"),
-        (By.CSS_SELECTOR, "button[type='submit']"),
-        (By.CSS_SELECTOR, "input[type='submit']"),
-        (By.XPATH, "//button[contains(text(), 'ログイン')]"),
-        (By.XPATH, "//button[contains(text(), 'サインイン')]"),
-        (By.XPATH, "//input[@type='submit']"),
-    ]
-    clicked = False
-    for by, selector in btn_selectors:
-        try:
-            btn = browser.find_element(by, selector)
-            browser.execute_script("arguments[0].click();", btn)
-            print(f"ログインボタンクリック成功: {by}='{selector}'")
-            clicked = True
-            break
-        except:
-            continue
-
-    if not clicked:
-        print("ログインボタンが見つかりません。スクリーンショットを保存します")
-        browser.save_screenshot("debug_no_button.png")
-        raise Exception("ログインボタンが見つかりませんでした")
-
-    time.sleep(5)
-    print(f"ログイン後URL: {browser.current_url}")
-
-    # ログイン失敗チェック（まだログインページにいる場合）
-    if "login" in browser.current_url or "signin" in browser.current_url:
-        browser.save_screenshot("debug_login_failed.png")
-        raise Exception(f"ログインに失敗した可能性があります。現在URL: {browser.current_url}")
-
-    print("ログイン成功")
 
 # --- JSONビルド ---
 def build_json(accounts, updated_at, prev_data=None):
@@ -190,6 +125,7 @@ def build_json(accounts, updated_at, prev_data=None):
             cat_totals[cat] = cat_totals.get(cat, 0) + acc["value"]
     total = sum(cat_totals.values())
 
+    # 前回のカテゴリ金額を辞書化
     prev_cats = {}
     prev_total = None
     if prev_data:
@@ -205,6 +141,7 @@ def build_json(accounts, updated_at, prev_data=None):
             entry["diff"] = v_rounded - prev_cats[k]
         categories.append(entry)
 
+    # 前回データに存在したが今回0になったカテゴリも差分として含める
     for prev_name, prev_val in prev_cats.items():
         if prev_name not in cat_totals:
             categories.append({
@@ -231,7 +168,11 @@ def main():
     try:
         # 1. Zaimログイン
         print("Zaimにログイン中...")
-        login_zaim(browser)
+        browser.get('https://id.zaim.net/')
+        browser.find_element(By.NAME, "email").send_keys(EMAIL)
+        browser.find_element(By.NAME, "password").send_keys(PASSWORD)
+        browser.find_element(By.ID, "submit").click()
+        time.sleep(3)
 
         # 2. 更新ボタン押下
         try:
@@ -277,10 +218,10 @@ def main():
         if crypto > 0:
             accounts.append({"name": "CRYPTO (bitbank)", "value": round(crypto / 10000), "category": "暗号"})
 
-        # 6. 金価格（保有量800gで固定）
+        # 6. 金価格（保有量800gで固定 → 実際の保有量に変更してください）
         gold_price = get_gold_price()
         if gold_price > 0:
-            GOLD_GRAMS = 800
+            GOLD_GRAMS = 800  # ← 保有グラム数を変更してください
             accounts.append({"name": "ゴールド (田中貴金属)", "value": round(gold_price * GOLD_GRAMS / 10000), "category": "GLD"})
 
         # 7. 手動入力項目を追加
@@ -288,7 +229,7 @@ def main():
             accounts.append({"name": m["name"], "value": m["value"], "category": m["category"]})
             print(f"  手動追加: {m['name']} {m['value']}万円 [{m['category']}]")
 
-        # 8. data.json出力
+        # 8. data.json出力（前回データを読み込んで差分を計算）
         now_str = datetime.now(ZoneInfo("Asia/Tokyo")).strftime('%Y/%m/%d %H:%M')
 
         prev_data = None
