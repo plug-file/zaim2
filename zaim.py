@@ -19,9 +19,6 @@ BITBANK_API_KEY = os.environ.get("BITBANK_API_KEY")
 BITBANK_SECRET = os.environ.get("BITBANK_SECRET")
 
 # --- 手動入力項目（万円単位） ---
-# Zaimで自動取得できない資産をここに追加してください
-# 形式: {"name": "口座名", "value": 金額(万円), "category": "カテゴリ"}
-# カテゴリ: 円, VT, ドル, 債券, GLD, 暗号, 日本, サウス, -
 MANUAL_ACCOUNTS = [
     {"name": "BITGET",   "value": 50,  "category": "暗号"},
     {"name": "ロボプロ",  "value": 10,  "category": "VT"},
@@ -29,7 +26,6 @@ MANUAL_ACCOUNTS = [
 ]
 
 # --- 口座名 → カテゴリ のマッピング ---
-# Zaimの口座名の一部に合わせて編集してください
 ACCOUNT_CATEGORY = {
     "住信 SBI ネット銀行 代": "円",
     "住信 SBI ネット銀行 定": "円",
@@ -81,11 +77,10 @@ def get_bitbank_balance():
         return 0, 0
     try:
         bb = ccxt.bitbank({'apiKey': BITBANK_API_KEY, 'secret': BITBANK_SECRET})
-        markets = bb.load_markets()  # 取引可能な全ペアを取得
+        markets = bb.load_markets()
         result = bb.fetch_balance()
         jpy = result['total'].get('JPY', 0)
         crypto_total = 0
-        # 残高があるコインをすべてチェック
         for sym, amt in result['total'].items():
             if sym == 'JPY' or not amt or amt <= 0:
                 continue
@@ -111,6 +106,9 @@ def setup_browser():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1920,1080')
+    options.add_argument('--disable-blink-features=AutomationControlled')  # bot検知回避
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])  # bot検知回避
+    options.add_experimental_option('useAutomationExtension', False)          # bot検知回避
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
     browser = webdriver.Chrome(options=options)
     browser.implicitly_wait(10)
@@ -125,7 +123,6 @@ def build_json(accounts, updated_at, prev_data=None):
             cat_totals[cat] = cat_totals.get(cat, 0) + acc["value"]
     total = sum(cat_totals.values())
 
-    # 前回のカテゴリ金額を辞書化
     prev_cats = {}
     prev_total = None
     if prev_data:
@@ -141,7 +138,6 @@ def build_json(accounts, updated_at, prev_data=None):
             entry["diff"] = v_rounded - prev_cats[k]
         categories.append(entry)
 
-    # 前回データに存在したが今回0になったカテゴリも差分として含める
     for prev_name, prev_val in prev_cats.items():
         if prev_name not in cat_totals:
             categories.append({
@@ -168,23 +164,26 @@ def main():
     try:
         # 1. Zaimログイン
         print("Zaimにログイン中...")
-        browser.get('https://zaim.net/home')
+        browser.get('https://zaim.net/users/login')  # ログインページに直接アクセス
+        print(f"アクセスURL: {browser.current_url}")
+        print(f"ページタイトル: {browser.title}")
 
-        # メールアドレス入力欄が表示されるまで待機
         wait = WebDriverWait(browser, 20)
-        wait.until(EC.presence_of_element_located((By.NAME, "email"))).send_keys(EMAIL)
+
+        # メールアドレス入力
+        email_field = wait.until(EC.presence_of_element_located((By.NAME, "email")))
+        email_field.send_keys(EMAIL)
+
+        # パスワード入力
         browser.find_element(By.NAME, "password").send_keys(PASSWORD)
 
-        # submitボタンがクリック可能になるまで待機してからクリック
-        wait.until(EC.element_to_be_clickable((By.ID, "submit"))).click()
+        # submitボタンをJavaScriptでクリック（bot検知回避）
+        submit_btn = wait.until(EC.presence_of_element_located((By.ID, "submit")))
+        browser.execute_script("arguments[0].click();", submit_btn)
         print("ログインボタンをクリックしました")
 
-        # ログイン後のページ遷移を待機（ホーム画面の特定要素が出るまで）
-        try:
-            wait.until(EC.url_contains("/home"))
-        except:
-            pass
-        time.sleep(3)
+        time.sleep(5)
+        print(f"ログイン後URL: {browser.current_url}")
 
         # 2. 更新ボタン押下
         try:
@@ -230,10 +229,10 @@ def main():
         if crypto > 0:
             accounts.append({"name": "CRYPTO (bitbank)", "value": round(crypto / 10000), "category": "暗号"})
 
-        # 6. 金価格（保有量800gで固定 → 実際の保有量に変更してください）
+        # 6. 金価格（保有量800gで固定）
         gold_price = get_gold_price()
         if gold_price > 0:
-            GOLD_GRAMS = 800  # ← 保有グラム数を変更してください
+            GOLD_GRAMS = 800
             accounts.append({"name": "ゴールド (田中貴金属)", "value": round(gold_price * GOLD_GRAMS / 10000), "category": "GLD"})
 
         # 7. 手動入力項目を追加
@@ -241,7 +240,7 @@ def main():
             accounts.append({"name": m["name"], "value": m["value"], "category": m["category"]})
             print(f"  手動追加: {m['name']} {m['value']}万円 [{m['category']}]")
 
-        # 8. data.json出力（前回データを読み込んで差分を計算）
+        # 8. data.json出力
         now_str = datetime.now(ZoneInfo("Asia/Tokyo")).strftime('%Y/%m/%d %H:%M')
 
         prev_data = None
