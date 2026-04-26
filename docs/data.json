@@ -1,5 +1,5 @@
 {
-  "updated": "2026/04/25 22:11",
+  "updated": "2026/04/26 13:50",
   "total": 6318,
   "accounts": [
     {
@@ -114,12 +114,12 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 26,
+      "value": 1,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 216,
+      "value": 241,
       "category": "暗号"
     },
     {
@@ -146,8 +146,8 @@
   "categories": [
     {
       "name": "円",
-      "value": 2735,
-      "diff": 2709
+      "value": 2710,
+      "diff": -25
     },
     {
       "name": "GLD",
@@ -157,33 +157,33 @@
     {
       "name": "VT",
       "value": 505,
-      "diff": 495
+      "diff": 0
     },
     {
       "name": "債券",
       "value": 395,
-      "diff": 395
+      "diff": 0
     },
     {
       "name": "暗号",
-      "value": 266,
-      "diff": 0
+      "value": 291,
+      "diff": 25
     },
     {
       "name": "サウス",
       "value": 163,
-      "diff": 163
+      "diff": 0
     },
     {
       "name": "ドル",
       "value": 105,
-      "diff": 5
+      "diff": 0
     },
     {
       "name": "日本",
       "value": 8,
-      "diff": 8
+      "diff": 0
     }
   ],
-  "total_diff": 3775
+  "total_diff": 0
 }
