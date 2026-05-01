@@ -1,6 +1,6 @@
 {
-  "updated": "2026/04/30 14:19",
-  "total": 6215,
+  "updated": "2026/05/01 14:32",
+  "total": 6248,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
@@ -14,12 +14,12 @@
     },
     {
       "name": "リクルートカード(MUFG...",
-      "value": -42,
+      "value": -46,
       "category": "-"
     },
     {
       "name": "Kyash",
-      "value": 10,
+      "value": 9,
       "category": "-"
     },
     {
@@ -49,7 +49,7 @@
     },
     {
       "name": "SBI 証券",
-      "value": 630,
+      "value": 673,
       "category": "-"
     },
     {
@@ -69,7 +69,7 @@
     },
     {
       "name": "確定拠出年金（JIST）",
-      "value": 346,
+      "value": 345,
       "category": "債券"
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       "name": "iシェアーズ MSCI ポーランド ETF",
-      "value": 73,
+      "value": 72,
       "category": "サウス"
     },
     {
@@ -89,7 +89,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 167,
+      "value": 166,
       "category": "VT"
     },
     {
@@ -99,12 +99,12 @@
     },
     {
       "name": "現金残高等",
-      "value": 271,
+      "value": 158,
       "category": "円"
     },
     {
       "name": "米ドル現金",
-      "value": 5,
+      "value": 162,
       "category": "ドル"
     },
     {
@@ -114,17 +114,17 @@
     },
     {
       "name": "JPY (bitbank)",
-      "value": 52,
+      "value": 27,
       "category": "円"
     },
     {
       "name": "CRYPTO (bitbank)",
-      "value": 181,
+      "value": 206,
       "category": "暗号"
     },
     {
       "name": "ゴールド (田中貴金属)",
-      "value": 2081,
+      "value": 2073,
       "category": "GLD"
     },
     {
@@ -146,38 +146,38 @@
   "categories": [
     {
       "name": "円",
-      "value": 2728,
-      "diff": 47
+      "value": 2590,
+      "diff": -138
     },
     {
       "name": "GLD",
-      "value": 2081,
-      "diff": -51
+      "value": 2073,
+      "diff": -8
     },
     {
       "name": "VT",
-      "value": 507,
-      "diff": 0
+      "value": 506,
+      "diff": -1
     },
     {
       "name": "債券",
-      "value": 396,
-      "diff": 0
-    },
-    {
-      "name": "暗号",
-      "value": 231,
-      "diff": -58
-    },
-    {
-      "name": "サウス",
-      "value": 159,
+      "value": 395,
       "diff": -1
     },
     {
       "name": "ドル",
-      "value": 105,
-      "diff": 0
+      "value": 262,
+      "diff": 157
+    },
+    {
+      "name": "暗号",
+      "value": 256,
+      "diff": 25
+    },
+    {
+      "name": "サウス",
+      "value": 158,
+      "diff": -1
     },
     {
       "name": "日本",
@@ -185,5 +185,5 @@
       "diff": 0
     }
   ],
-  "total_diff": -63
+  "total_diff": 33
 }
