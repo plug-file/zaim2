@@ -1,10 +1,10 @@
 {
-  "updated": "2026/05/01 14:32",
-  "total": 6248,
+  "updated": "2026/05/02 13:50",
+  "total": 6231,
   "accounts": [
     {
       "name": "住信 SBI ネット銀行 代...",
-      "value": 345,
+      "value": 188,
       "category": "円"
     },
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "住信 SBI ネット銀行 定...",
-      "value": 2000,
+      "value": 1800,
       "category": "円"
     },
     {
@@ -49,12 +49,12 @@
     },
     {
       "name": "SBI 証券",
-      "value": 673,
+      "value": 1002,
       "category": "-"
     },
     {
       "name": "楽天証券",
-      "value": 309,
+      "value": 320,
       "category": "VT"
     },
     {
@@ -74,7 +74,7 @@
     },
     {
       "name": "iシェアーズ MSCI ドイツ ETF",
-      "value": 86,
+      "value": 87,
       "category": "サウス"
     },
     {
@@ -89,7 +89,7 @@
     },
     {
       "name": "eMAXIS Slim 全世界株式(オール・カントリー)",
-      "value": 166,
+      "value": 164,
       "category": "VT"
     },
     {
@@ -99,17 +99,12 @@
     },
     {
       "name": "現金残高等",
-      "value": 158,
+      "value": 173,
       "category": "円"
     },
     {
       "name": "米ドル現金",
-      "value": 162,
-      "category": "ドル"
-    },
-    {
-      "name": "その他合計",
-      "value": 0,
+      "value": 477,
       "category": "ドル"
     },
     {
@@ -146,38 +141,38 @@
   "categories": [
     {
       "name": "円",
-      "value": 2590,
-      "diff": -138
+      "value": 2248,
+      "diff": -342
     },
     {
       "name": "GLD",
       "value": 2073,
-      "diff": -8
+      "diff": 0
+    },
+    {
+      "name": "ドル",
+      "value": 577,
+      "diff": 315
     },
     {
       "name": "VT",
-      "value": 506,
-      "diff": -1
+      "value": 515,
+      "diff": 9
     },
     {
       "name": "債券",
       "value": 395,
-      "diff": -1
-    },
-    {
-      "name": "ドル",
-      "value": 262,
-      "diff": 157
+      "diff": 0
     },
     {
       "name": "暗号",
       "value": 256,
-      "diff": 25
+      "diff": 0
     },
     {
       "name": "サウス",
-      "value": 158,
-      "diff": -1
+      "value": 159,
+      "diff": 1
     },
     {
       "name": "日本",
@@ -185,5 +180,5 @@
       "diff": 0
     }
   ],
-  "total_diff": 33
+  "total_diff": -17
 }
